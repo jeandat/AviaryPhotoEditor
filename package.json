@@ -1,0 +1,11 @@
+{
+  "name": "Aviary Photo Editor",
+  "main": "index.html",
+  "description": "Demo app for node-webkit and Aviary SDK",
+  "version": "0.1",
+  "window": {
+    "position": "center",
+    "width": 800,
+    "height": 500
+  }
+}
