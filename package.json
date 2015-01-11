@@ -13,7 +13,7 @@
     "height": 500
   },
   "scripts": {
-    "start": "nodewebkit"
+    "start": "nodewebkit --mac_plist info.plist"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
