@@ -5,9 +5,7 @@ module.exports = {
     },
     all: {
         src: [
-            '**/*.js',
-            '!node_modules/**',
-            '!.idea/**'
+            'src/**/*.js',
         ]
     }
 };

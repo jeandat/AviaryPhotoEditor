@@ -1,6 +1,6 @@
 {
   "name": "AviaryPhotoEditor",
-  "main": "index.html",
+  "main": "src/index.html",
   "description": "Demo app for node-webkit and Aviary SDK",
   "version": "0.0.1",
   "repository": {
@@ -13,13 +13,14 @@
     "height": 500
   },
   "scripts": {
-    "start": "nodewebkit --mac_plist info.plist"
+    "start": "grunt && nodewebkit --mac_plist Info.plist --mac_icon nw.icns"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "load-grunt-configs": "^0.4.1",
-    "jshint-stylish": "^1.0.0"
+    "jshint-stylish": "^1.0.0",
+    "grunt-node-webkit-builder": "^1.0.0"
   },
   "dependencies": {
     "nodewebkit": "^0.11.5"
