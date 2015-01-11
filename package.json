@@ -1,24 +1,26 @@
 {
-    "name": "AviaryPhotoEditor",
-    "main": "index.html",
-    "description": "Demo app for node-webkit and Aviary SDK",
-    "version": "0.0.1",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jan4dev/AviaryPhotoEditor"
-    },
-    "window": {
-        "position": "center",
-        "width": 800,
-        "height": 500
-    },
-    "scripts": {
-        "start": "nodewebkit"
-    },
-    "bundledDependencies":[
-        "nodewebkit"
-    ],
-    "dependencies":{
-        "nodewebkit": "^0.11.5"
-    }
+  "name": "AviaryPhotoEditor",
+  "main": "index.html",
+  "description": "Demo app for node-webkit and Aviary SDK",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jan4dev/AviaryPhotoEditor"
+  },
+  "window": {
+    "position": "center",
+    "width": 800,
+    "height": 500
+  },
+  "scripts": {
+    "start": "nodewebkit"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "load-grunt-configs": "^0.4.1"
+  },
+  "dependencies": {
+    "nodewebkit": "^0.11.5"
+  }
 }
