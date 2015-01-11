@@ -1,9 +1,13 @@
 module.exports = {
-    jshint: {
-        all: {
-            files: {
-                src: '*.js'
-            }
-        }
+    options: {
+        reporter: require('jshint-stylish'),
+        quotmark: 'single'
+    },
+    all: {
+        src: [
+            '**/*.js',
+            '!node_modules/**',
+            '!.idea/**'
+        ]
     }
 };

@@ -1,0 +1,1 @@
+console.info('Hello, I\'m a node-webkit and Aviary SDK demo app');
