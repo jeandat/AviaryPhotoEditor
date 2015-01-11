@@ -1,11 +1,24 @@
 {
-  "name": "Aviary Photo Editor",
-  "main": "index.html",
-  "description": "Demo app for node-webkit and Aviary SDK",
-  "version": "0.1",
-  "window": {
-    "position": "center",
-    "width": 800,
-    "height": 500
-  }
+    "name": "AviaryPhotoEditor",
+    "main": "index.html",
+    "description": "Demo app for node-webkit and Aviary SDK",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jan4dev/AviaryPhotoEditor"
+    },
+    "window": {
+        "position": "center",
+        "width": 800,
+        "height": 500
+    },
+    "scripts": {
+        "start": "nodewebkit"
+    },
+    "bundledDependencies":[
+        "nodewebkit"
+    ],
+    "dependencies":{
+        "nodewebkit": "^0.11.5"
+    }
 }
