@@ -13,7 +13,7 @@
     "height": 500
   },
   "scripts": {
-    "start": "grunt && nodewebkit --mac_plist Info.plist --mac_icon nw.icns"
+    "start": "grunt && nodewebkit --mac_plist resources/Info.plist --mac_icon resources/app.icns"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
