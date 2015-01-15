@@ -10,8 +10,6 @@ module.exports = {
     src: [
         'package.json',
         'Readme.md',
-        'app/**'
-        //'node_modules/**',
-        //'!node_modules/*{grunt,jshint}*/**'
+        'build/**'
     ]
 };

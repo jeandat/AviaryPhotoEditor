@@ -3,11 +3,11 @@ var files=[{
             'src/**/*.jade',
             '!src/index.jade'
         ],
-        dest:'app/templates.js'
+        dest:'build/templates.js'
     },
     {
         src:'src/index.jade',
-        dest:'app/index.html'
+        dest:'build/index.html'
     }
 ];
 

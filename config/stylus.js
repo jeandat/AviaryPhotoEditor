@@ -5,7 +5,7 @@ module.exports = {
     },
     all:{
         files:{
-            'app/app.css': 'src/**/*.styl'
+            'build/app.css': 'src/**/*.styl'
         }
     }
 };

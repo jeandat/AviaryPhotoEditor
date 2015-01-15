@@ -1,6 +1,6 @@
 {
   "name": "AviaryPhotoEditor",
-  "main": "app/index.html",
+  "main": "build/index.html",
   "description": "Demo app for node-webkit and Aviary SDK",
   "version": "0.0.1",
   "repository": {

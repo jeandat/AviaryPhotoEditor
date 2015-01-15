@@ -1,5 +1,5 @@
 .idea/
-app/
+build/
 cache/
 node_modules/
 dist/

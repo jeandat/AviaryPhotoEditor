@@ -1,8 +1,13 @@
 module.exports = {
     main:{
-        src:'img/**',
-        dest:'app/',
-        expand:true,
-        cwd:'resources'
+        files:[{
+            src:'img/**',
+            dest:'build/',
+            expand:true,
+            cwd:'resources'
+        },{
+            src:['package.json', 'README.md'],
+            dest:'build/'
+        }]
     }
 };
