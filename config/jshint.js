@@ -3,9 +3,7 @@ module.exports = {
         reporter: require('jshint-stylish'),
         quotmark: 'single'
     },
-    all: {
-        src: [
-            'src/**/*.js',
-        ]
-    }
+    src: [
+        'src/**/*.js'
+    ]
 };

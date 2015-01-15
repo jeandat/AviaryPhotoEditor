@@ -15,8 +15,9 @@
         <key>CFBundleSignature</key>
         <string>jdat</string>
         <key>CFBundleExecutable</key>
-        <string>MacOS/node-webkit resources/app.nw</string>
+        <string>node-webkit</string>
         <key>CFBundleIconFile</key>
-        <string>app.icns</string>
+        <string>nw.icns</string>
     </dict>
 </plist>
+
