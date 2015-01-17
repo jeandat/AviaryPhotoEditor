@@ -1,0 +1,24 @@
+# Default build for dev
+default:
+    - 'clean'
+    - 'jshint:dev'
+    - 'stylus:dev'
+    - 'autoprefixer'
+    - 'jade:dev'
+    - 'uglify:dev'
+    - 'copy'
+
+# Prepare a binary for distribution
+dist:
+    - 'clean'
+    - 'jshint:dist'
+    - 'stylus:dist'
+    - 'autoprefixer'
+    - 'jade:dist'
+    - 'uglify:dist'
+    - 'copy'
+    - 'nodewebkit'
+
+# Generate the documentation
+docs:
+    - 'groc'

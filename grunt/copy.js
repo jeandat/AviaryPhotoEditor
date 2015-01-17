@@ -1,5 +1,5 @@
 module.exports = {
-    main:{
+    app:{
         files:[{
             src:'img/**',
             dest:'build/',
