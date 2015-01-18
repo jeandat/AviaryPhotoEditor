@@ -1,5 +1,5 @@
 var files = [{
-    src: ['src/**/*.js']
+    src: ['grunt/*.js','src/**/*.js']
 }];
 
 module.exports = {
@@ -49,7 +49,6 @@ module.exports = {
         worker        : false,
         nonstandard   : false,
         browserify    : false,
-        devel         : false,
         dojo          : false,
 
         // Custom Globals

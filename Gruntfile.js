@@ -1,7 +1,14 @@
 
 module.exports = function(grunt) {
 
-    //loads the various task configuration files
-    var configs = require('load-grunt-config')(grunt);
+    // Loads the various task configuration files
+    var configs = require('load-grunt-config')(grunt, {
+        data:{
+            build:'build',
+            vendors:{
+                js:['vendors/jQuery/*.js','vendors/LoDash/*.js','vendors/**/*.js']
+            }
+        }
+    });
     grunt.initConfig(configs);
 };

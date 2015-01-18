@@ -3,6 +3,6 @@ module.exports = {
         browsers: [ 'chrome >= 36' ]
     },
     files:{
-        'build/app.css':'build/app.css'
+        '<%=build%>/app.css':'<%=build%>/app.css'
     }
 };

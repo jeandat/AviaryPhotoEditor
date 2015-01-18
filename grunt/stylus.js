@@ -1,5 +1,5 @@
 var files = {
-    'build/app.css': 'src/**/*.styl'
+    '<%=build%>/app.css': 'src/**/*.styl'
 };
 
 module.exports = {

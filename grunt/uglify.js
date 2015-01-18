@@ -1,6 +1,6 @@
 var files = [{
     src:'**/*.js',
-    dest:'build/',
+    dest:'<%=build%>/',
     expand:true,
     cwd:'src'
 }];

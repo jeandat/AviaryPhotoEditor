@@ -10,6 +10,6 @@ module.exports = {
     src: [
         'package.json',
         'Readme.md',
-        'build/**'
+        '<%=build%>/**'
     ]
 };

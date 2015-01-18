@@ -1,1 +1,8 @@
-module.exports=['build/'];
+module.exports={
+    build:{
+        src:['<%=build%>/']
+    },
+    docs:{
+        src:['docs/']
+    }
+};

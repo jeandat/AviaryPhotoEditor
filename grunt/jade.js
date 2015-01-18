@@ -3,22 +3,28 @@ var files=[{
             'src/**/*.jade',
             '!src/index.jade'
         ],
-        dest:'build/templates.js'
-    },
-    {
+        dest:'<%=build%>/templates.js'
+    }, {
         src:'src/index.jade',
-        dest:'build/index.html'
+        dest:'<%=build%>/index.html'
     }
 ];
 
-module.exports={
-    dev:{
+module.exports=function(grunt,options){
+    return {
         options:{
-            pretty: true
+            data:{
+                vendors:grunt.file.expand(options.vendors.js)
+            }
         },
-        files:files
-    },
-    dist:{
-        files:files
-    }
+        dev:{
+            options:{
+                pretty: true
+            },
+            files:files
+        },
+        dist:{
+            files:files
+        }
+    };
 };

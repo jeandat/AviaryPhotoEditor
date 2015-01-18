@@ -1,6 +1,6 @@
 # Default build for dev
 default:
-    - 'clean'
+    - 'clean:build'
     - 'jshint:dev'
     - 'stylus:dev'
     - 'autoprefixer'
@@ -10,7 +10,7 @@ default:
 
 # Prepare a binary for distribution
 dist:
-    - 'clean'
+    - 'clean:build'
     - 'jshint:dist'
     - 'stylus:dist'
     - 'autoprefixer'
@@ -21,4 +21,5 @@ dist:
 
 # Generate the documentation
 docs:
+    - 'clean:docs'
     - 'groc'
