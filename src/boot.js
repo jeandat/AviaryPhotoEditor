@@ -35,12 +35,15 @@ MainRouter.instance().start();
 // Prepare the Aviary Editor
 var featherEditor = new Aviary.Feather({
     apiKey:'3b1eb7150b164beebe6996cea9086c57',
-    image:'editor',
     tools:'all',
     displayImageSize:true,
     enableCORS:true,
     onLoad:function(){
         console.debug('Aviary editor loaded');
+        featherEditor.launch({
+            image:'editor',
+            url:'img/paris.jpg'
+        });
     },
     onReady:function(){
         console.debug('Aviary editor ready');
@@ -48,9 +51,4 @@ var featherEditor = new Aviary.Feather({
     onError:function(err){
         console.error('Failed to instantiate the Aviary editor: ', err);
     }
-    //onSave:function(imageID, newURL) {
-    //    $(imageID).attr(src,newURL);
-    //}
 });
-
-featherEditor.launch();
