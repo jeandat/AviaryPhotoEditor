@@ -2,9 +2,9 @@ doctype html
 html
     head
         title Aviary Photo Editor
-        link(rel='stylesheet', src='app.css')
+        link(rel='stylesheet', type='text/css', href='app.css')
     body
-        img.editor(src='img/Ducks on a Misty Pond.jpg')
+        img#editor(src='img/Ducks.jpg')
 
         //- Injected list of vendor file to avoid adding a library manually and have the right order of injection
         //- written several times accross the project
@@ -12,5 +12,4 @@ html
             script(src=js)
 
         //- Boot the app
-        script.
-            require('./boot');
+        script require('./boot');
