@@ -1,7 +1,6 @@
 var template = JST['editor/editor']();
 var Aviary = win.Aviary;
 
-// Holder on the photo
 var $img, editor, singleton;
 
 // This view is a singleton.
