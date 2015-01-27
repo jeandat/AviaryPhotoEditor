@@ -5,8 +5,8 @@ module.exports = function(grunt) {
     var configs = require('load-grunt-config')(grunt, {
         data:{
             build:'build',
-            vendors:{
-                js:['vendors/jQuery/*.js','vendors/LoDash/*.js','vendors/**/*.js']
+            jsFiles:{
+                vendors:['vendors/jQuery/*.js','vendors/LoDash/*.js','vendors/**/*.js']
             }
         }
     });

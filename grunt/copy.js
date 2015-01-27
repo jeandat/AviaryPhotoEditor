@@ -9,8 +9,13 @@ module.exports = {
             src:['package.json', 'README.md'],
             dest:'<%=build%>/'
         },{
-            src:'<%=vendors.js%>',
+            src:'<%=jsFiles.vendors%>',
             dest:'<%=build%>/'
+        },{
+            src:'*',
+            dest:'<%=build%>/font/icomoon/',
+            expand:true,
+            cwd:'resources/font/icomoon/fonts/'
         }]
     }
 };

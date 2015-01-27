@@ -4,12 +4,13 @@ html
         title Aviary Photo Editor
         link(rel='stylesheet', type='text/css', href='app.css')
     body
-        img#editor(src='img/paris.jpg')
-
         //- Injected list of vendor file to avoid adding a library manually and have the right order of injection
         //- written several times accross the project
         each js in vendors
             script(src=js)
+
+        //- Templates used in this app
+        script(src='templates.js')
 
         //- Boot the app
         script require('./boot');

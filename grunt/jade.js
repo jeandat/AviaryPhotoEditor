@@ -1,30 +1,29 @@
-var files=[{
-        src:[
-            'src/**/*.jade',
-            '!src/index.jade'
-        ],
-        dest:'<%=build%>/templates.js'
-    }, {
-        src:'src/index.jade',
-        dest:'<%=build%>/index.html'
-    }
-];
 
 module.exports=function(grunt,options){
     return {
-        options:{
-            data:{
-                vendors:grunt.file.expand(options.vendors.js)
-            }
-        },
-        dev:{
+        index:{
             options:{
-                pretty: true
+                data:{
+                    vendors:grunt.file.expand(options.jsFiles.vendors)
+                }
             },
-            files:files
+            src:'src/index.jade',
+            dest:'<%=build%>/index.html'
         },
-        dist:{
-            files:files
+        jst:{
+            options:{
+                client:true,
+                processName: function (filename) {
+                    var key = filename.replace('src/','').replace('.jade','');
+                    grunt.verbose.writeln('> JST key for filename %s is %s', filename, key);
+                    return key;
+                }
+            },
+            src:[
+                'src/**/*.jade',
+                '!src/index.jade'
+            ],
+            dest:'<%=build%>/templates.js'
         }
     };
 };

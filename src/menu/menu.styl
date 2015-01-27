@@ -1,0 +1,28 @@
+#menu
+    button
+        width 3rem
+        height 3rem
+        border-radius 50%
+        opacity .2
+        background-color #4CD964
+        color white
+        transition-property opacity
+        will-change opacity
+        font-size 1.5rem
+        z-index 200
+
+        position fixed
+        bottom 2rem
+
+        &:nth-child(1)
+            right 2rem
+        &:nth-child(2)
+            right 6rem
+
+        &:hover
+            opacity 1
+
+        &::before {
+            position: relative;
+            right: -0.1rem;
+        }

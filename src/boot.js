@@ -4,7 +4,9 @@ console.info('Hello, I\'m a node-webkit and Aviary SDK demo app');
 global.win = window;
 global.doc = win.doc;
 global.$ = window.$;
+global.JST = win.JST;
 global.Backbone = window.Backbone;
+global.$body = $('body');
 
 // Global shorcut to bypass a node limitation : all require paths are relative which is ugly and catastrophic when refactoring.
 // This shorcut allows us to always use absolute paths.
@@ -13,13 +15,17 @@ global.get = function(name) {
     return require(__dirname + '/' + name);
 };
 
+// Render the editor
 var Aviary = win.Aviary;
+var EditorView = get('editor/EditorView');
+var editorView = new EditorView();
+$body.append(editorView.render().$el);
+
 
 // That's very strange but `nw.gui` doesn't live in node require scope.
 // Its reference is hardcoded in the require reference in window.
 // Just hit `window.require` in devtools to understand.
 var gui = win.require('nw.gui');
-
 
 // Create a native Mac OS X menu
 var mb = new gui.Menu({type:'menubar'});
@@ -32,23 +38,7 @@ var MainRouter = get('common/router/Main');
 MainRouter.instance().start();
 
 
-// Prepare the Aviary Editor
-var featherEditor = new Aviary.Feather({
-    apiKey:'3b1eb7150b164beebe6996cea9086c57',
-    tools:'all',
-    displayImageSize:true,
-    enableCORS:true,
-    onLoad:function(){
-        console.debug('Aviary editor loaded');
-        featherEditor.launch({
-            image:'editor',
-            url:'img/paris.jpg'
-        });
-    },
-    onReady:function(){
-        console.debug('Aviary editor ready');
-    },
-    onError:function(err){
-        console.error('Failed to instantiate the Aviary editor: ', err);
-    }
-});
+// Render the main menu
+var MenuView = get('menu/MenuView');
+var menuView = new MenuView();
+$body.append(menuView.render().el);
