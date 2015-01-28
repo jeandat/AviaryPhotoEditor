@@ -19,8 +19,8 @@ global.get = function(name) {
 // Dependencies
 var Aviary = win.Aviary;
 var editorView = get('editor/EditorView').instance();
-var mainRouter = get('common/router/Main').instance();
 var menuView = get('menu/MenuView').instance();
+var DragNDropService = get('common/service/DragNDropService');
 
 
 // That's very strange but `nw.gui` doesn't live in node require scope.
@@ -33,13 +33,13 @@ mb.createMacBuiltin('Aviary Photo Editor');
 gui.Window.get().menu = mb;
 
 
-// Start the main router
-mainRouter.start();
-
-
 // Render the main menu
 $body.append(menuView.render().el);
 
 
 // Render the editor
 $body.append(editorView.render().el);
+
+
+// Start the drang and drop service
+DragNDropService.instance().listen();
