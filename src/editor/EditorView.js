@@ -44,7 +44,7 @@ var EditorView = Backbone.View.extend({
     },
     // Hide the photo and show the Aviary editor
     open: function () {
-        // TODO
+        this.$el.toggleClass('open');
         console.debug('Editor opened');
     },
     // Hide the Aviary editor and show the photo
