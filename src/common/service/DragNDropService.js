@@ -26,12 +26,11 @@ var DragNDropService = Base.extend({
     },
 
     // When the user release the drag in the window, we can analyse what was dragged and eventually render the import view to treat it.
+    // We accepts only two types of items : url (text/uri-list) and files
     onDrop: function (event) {
 
         // We don't want the navigator to replace the content of the page with the dragged content
         event.preventDefault();
-
-        // We accepts only two types of items : url (text/uri-list) and files
 
         // Process urls
         if(_.contains(event.dataTransfer.types, DragNDropService.URI_TYPE)){

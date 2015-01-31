@@ -1,7 +1,7 @@
 module.exports = {
     app:{
         files:[{
-            src:'img/**',
+            src:'img/**/*.{png,jpg,webp,svg,gif}',
             dest:'<%=build%>/',
             expand:true,
             cwd:'resources'
