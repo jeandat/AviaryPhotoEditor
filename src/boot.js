@@ -17,20 +17,14 @@ global.get = function(name) {
 };
 
 // Dependencies
-var Aviary = win.Aviary;
 var editorView = get('editor/EditorView').instance();
 var menuView = get('menu/MenuView').instance();
-var DragNDropService = get('common/service/DragNDropService');
+var nativeMenu = get('menu/NativeMenu').instance();
+var dragNDropService = get('common/service/DragNDropService').instance();
 
 
-// That's very strange but `nw.gui` doesn't live in node require scope.
-// Its reference is hardcoded in the require reference in window.
-// Just hit `window.require` in devtools to understand.
-var gui = win.require('nw.gui');
 // Create a native Mac OS X menu
-var mb = new gui.Menu({type:'menubar'});
-mb.createMacBuiltin('Aviary Photo Editor');
-gui.Window.get().menu = mb;
+nativeMenu.create();
 
 
 // Render the main menu
@@ -42,4 +36,4 @@ $body.append(editorView.render().el);
 
 
 // Start the drang and drop service
-DragNDropService.instance().listen();
+dragNDropService.listen();

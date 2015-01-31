@@ -7,7 +7,7 @@ var files = {
 
 module.exports = {
     options:{
-        paths: ['src/common/styles'],
+        paths: ['src/common/styles/'],
         banner: '/* John Grey on <%= grunt.template.today() %> */'
     },
     dev:{

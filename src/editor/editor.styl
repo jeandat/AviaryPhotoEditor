@@ -1,3 +1,4 @@
+@import 'vars'
 
 #editor
 
@@ -10,6 +11,7 @@
         transition-duration 1s
         transition-delay 500ms
 
+
     #photo
         display none
 
@@ -21,6 +23,7 @@
             width 50%
             height 100%
             overflow hidden
+            background-color $bg
             will-change transform
 
             transition-property transform
@@ -29,7 +32,7 @@
 
             img
                 width 200%
-                height 100%
+                height auto
 
         &-left
             left 0
@@ -54,3 +57,10 @@
         #avpw_holder
             opacity 1
             -webkit-filter grayscale(0)
+
+
+#editor.contain #photo
+    &-left,&-right
+        img
+            object-fit contain
+            height 100%

@@ -94,6 +94,11 @@ var EditorView = Backbone.View.extend({
     // Callback when the save button of the aviary editor is clicked.
     onSave: function (imageId, newUrl) {
         this.setImage(newUrl);
+    },
+
+    // Maintain photo in window
+    toggleContainPhoto: function () {
+        this.$el.toggleClass('contain');
     }
 
 }, {
