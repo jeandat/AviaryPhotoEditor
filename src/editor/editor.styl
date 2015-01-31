@@ -14,6 +14,7 @@
             overflow hidden
 
             transition-property transform
+            transition-duration 2s
 
             img
                 width 200%
@@ -34,7 +35,9 @@
         #photo
 
             &-left
+                will-change transform
                 transform translateX(-100%)
 
             &-right
+                will-change transform
                 transform translateX(100%)
