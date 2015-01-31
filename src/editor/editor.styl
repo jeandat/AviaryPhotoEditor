@@ -1,6 +1,15 @@
 
 #editor
 
+    #avpw_holder
+        z-index 50
+        opacity 0.8
+        -webkit-filter grayscale(100%)
+
+        transition-property opacity, -webkit-filter
+        transition-duration 1s
+        transition-delay 500ms
+
     #photo
         display none
 
@@ -41,3 +50,7 @@
 
             &-right
                 transform translateX(100%)
+
+        #avpw_holder
+            opacity 1
+            -webkit-filter grayscale(0)

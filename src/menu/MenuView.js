@@ -2,7 +2,7 @@ var template = JST['menu/menu']();
 
 var singleton;
 
-var EditorView = get('editor/EditorView');
+var editorView = get('editor/EditorView').instance();
 
 // This view is a singleton
 var MenuView = Backbone.View.extend({
@@ -10,7 +10,11 @@ var MenuView = Backbone.View.extend({
     tagName:'nav',
     events:{
         'click #edit-button': 'editPhoto',
-        'click #tutorial-button': 'showTutorial'
+        'click #tutorial-button': 'showTutorial',
+        'click #launch-button': function () {
+            editorView.setImage('img/paris.jpg');
+            editorView.launch();
+        }
     },
     initialize: function () {
         this.listenTo(Backbone, 'editor:ready', function () {
@@ -25,7 +29,7 @@ var MenuView = Backbone.View.extend({
         return this;
     },
     editPhoto: function () {
-        EditorView.instance().open();
+        editorView.toggle();
     },
     showTutorial: function () {
         console.warn('Not implemented yet');
