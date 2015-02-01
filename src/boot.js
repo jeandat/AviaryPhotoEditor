@@ -37,3 +37,7 @@ $body.append(editorView.render().el);
 
 // Start the drang and drop service
 dragNDropService.listen();
+
+// Show the app after everything is ready
+var gui = win.require('nw.gui');
+gui.Window.get().show();
