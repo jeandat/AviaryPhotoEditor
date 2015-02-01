@@ -1,5 +1,5 @@
 
-module.exports=function(grunt,options){
+module.exports = function(grunt,options){
     return {
         index:{
             options:{

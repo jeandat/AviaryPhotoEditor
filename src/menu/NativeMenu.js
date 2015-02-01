@@ -19,6 +19,7 @@ var NativeMenu = Base.extend({
         this.menubar.createMacBuiltin('Aviary Photo Editor',{hideEdit: true});
         gui.Window.get().menu = this.menubar;
 
+        // Editor menu
         var editorSubMenu = new Menu();
         editorSubMenu.append(new MenuItem({
             type: 'checkbox',
@@ -29,12 +30,24 @@ var NativeMenu = Base.extend({
             }
         }));
 
-        var editorMenuItem = new MenuItem({
-            label: 'Editor',
-            submenu: editorSubMenu
-        });
+        // File menu
+        var fileSubMenu = new Menu();
+        fileSubMenu.append(new MenuItem({
+            label: 'Import...',
+            click: function () {
+                console.debug('Not implemented yet !');
+            }
+        }));
+        fileSubMenu.append(new MenuItem({
+            label: 'Export...',
+            click: function () {
+                console.debug('Not implemented yet !');
+            }
+        }));
 
-        this.menubar.insert(editorMenuItem,1);
+        // Add menus in the menubar
+        this.menubar.insert(new MenuItem({label: 'File', submenu: fileSubMenu}), 1);
+        this.menubar.insert(new MenuItem({label: 'Editor', submenu: editorSubMenu}), 2);
     }
 
 
