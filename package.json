@@ -9,11 +9,13 @@
   },
   "window": {
     "position": "center",
-    "show": true,
+    "show": false,
     "width": 1120,
     "height": 700
   },
   "scripts": {
+    "build": "grunt",
+    "dist": "grunt dist",
     "start": "grunt && nodewebkit --mac_plist resources/Info.plist --mac_icon resources/app.icns"
   },
   "devDependencies": {
