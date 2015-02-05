@@ -3,13 +3,15 @@ var Aviary = win.Aviary;
 
 var editor, singleton;
 
+var fileService = get('common/service/FileService').instance();
+
 // This view is a singleton.
 var EditorView = Backbone.View.extend({
 
     id:'editor',
 
     initialize: function () {
-        _.bindAll(this, 'onLoad', 'onError', 'onReady', 'onSave', 'onClose');
+        _.bindAll(this, 'onLoad', 'onError', 'onReady', 'onSave', 'onClose', 'toggle', 'onSaveButtonClicked');
     },
 
     render: function () {
@@ -33,6 +35,7 @@ var EditorView = Backbone.View.extend({
                 enableCORS:true,
                 onLoad:this.onLoad,
                 onError:this.onError,
+                onSaveButtonClicked:this.onSaveButtonClicked,
                 onSave:this.onSave,
                 onClose:this.onClose
             });
@@ -46,6 +49,7 @@ var EditorView = Backbone.View.extend({
         this.$photo.attr('src', url);
         this.$photoLeft.attr('src', url);
         this.$photoRight.attr('src', url);
+        // TODO close panes before
     },
 
     // Make available the aviary editor (from loaded to ready state).
@@ -61,6 +65,7 @@ var EditorView = Backbone.View.extend({
     // Show/Hide the Aviary editor.
     toggle: function () {
         this.$el.toggleClass('open');
+        // TODO return deferred
     },
 
     // Close and hide the Aviary editor.
@@ -91,9 +96,30 @@ var EditorView = Backbone.View.extend({
         Backbone.trigger('editor:closed', this);
     },
 
-    // Callback when the save button of the aviary editor is clicked.
+    // Callback when the save button of the aviary editor is clicked but before the save happens.
+    // It is possible to abort the save by returning false.
+    onSaveButtonClicked: function () {
+        // TODO show a custom wait indicator
+        // Imply to add `showWaitIndicator:false` in editor options
+    },
+
+    // Post callback after save.
+    // Update the image above the editor then hide it.
     onSave: function (imageId, newUrl) {
-        this.setImage(newUrl);
+        var self = this;
+        fileService.importUrl(newUrl).then(function (path) {
+            self.setImage(encodeURI(path));
+            // self.forceRedraw();
+            self.toggle();
+        }).done();
+    },
+
+    // Force a redraw of each image
+    forceRedraw: function () {
+        /* jshint expr: true */
+        this.$photo[0].offsetHeight;
+        this.$photoLeft[0].offsetHeight;
+        this.$photoRight[0].offsetHeight;
     },
 
     // Maintain photo in window

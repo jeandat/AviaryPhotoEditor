@@ -11,9 +11,17 @@ var MenuView = Backbone.View.extend({
     events:{
         'click #edit-button': 'editPhoto',
         'click #tutorial-button': 'showTutorial',
+        // TODO Move in menudev
         'click #launch-button': function () {
             editorView.setImage('img/paris.jpg');
             editorView.launch();
+        },
+        // TODO Move in menudev
+        'click #import-button': function () {
+            var ImportView = get('import/ImportView');
+            var view;
+            view = new ImportView({url: 'http://img0.mxstatic.com/wallpapers/82ea7e91cbd54b3e2b3e921c4dc4bef9_large.jpeg'});
+            view = new ImportView({file: '/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg'});
         }
     },
     initialize: function () {
