@@ -7,4 +7,4 @@ var PhotoCollection = Backbone.Collection.extend({
     }
 });
 
-exports = PhotoCollection;
+module.exports = PhotoCollection;

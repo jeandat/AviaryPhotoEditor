@@ -12,13 +12,14 @@ var singleton;
 var FileService = Base.extend({
 
     // Download a photo on disk into Application Support from a `url`.
-    importUrl: function (url) {
+    // `id` is used as a name on disk.
+    importUrl: function (url, id) {
 
         console.info('Initiating download of %s', url);
 
         // TODO create historic folder if non existing
-        // TODO generate a unique photo id (PhotoModel ?)
-        var path = APP_SUPPORT + 'historic/aviary-response.jpg';
+        // TODO which extension ? jpg ?
+        var path = APP_SUPPORT + 'historic/' + id + '.jpg';
 
         var def = Q.defer();
 
@@ -42,13 +43,14 @@ var FileService = Base.extend({
     },
 
     // Copy a `file` into Application Support with a generated name.
-    importFile: function (file) {
+    // `id` is used as a name on disk.
+    importFile: function (file, id) {
 
         console.info('Initiating download of %s', file);
 
         // TODO create historic folder if non existing
-        // TODO generate a unique photo id (PhotoModel ?)
-        var path = APP_SUPPORT + 'historic/aviary-response.jpg';
+        // TODO which extension ? jpg ?
+        var path = APP_SUPPORT + 'historic/' + id + '.jpg';
 
         var def = Q.defer();
 

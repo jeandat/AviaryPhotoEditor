@@ -2,4 +2,4 @@ var PhotoModel = Backbone.Model.extend({
 
 });
 
-exports = PhotoModel;
+module.exports = PhotoModel;
