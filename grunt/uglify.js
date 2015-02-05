@@ -25,12 +25,22 @@ module.exports = {
                 drop_debugger:false,
                 drop_console:false,
                 sequences:false,
-                join_vars:false
+                join_vars:false,
+                global_defs:{
+                    DEV:true
+                }
             }
         },
         files:files
     },
     dist:{
+        options:{
+            compress:{
+                global_defs:{
+                    DEV:false
+                }
+            }
+        },
         files:files
     }
 

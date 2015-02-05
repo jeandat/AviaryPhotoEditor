@@ -16,7 +16,7 @@ var NativeMenu = Base.extend({
     // Transform the default menubar in a native Mac OS X menubar.
     create: function () {
         this.menubar = new Menu({type:'menubar'});
-        this.menubar.createMacBuiltin('Aviary Photo Editor',{hideEdit: true});
+        this.menubar.createMacBuiltin('Aviary Photo Editor',{hideEdit: !DEV});
         gui.Window.get().menu = this.menubar;
 
         // Editor menu
