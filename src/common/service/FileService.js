@@ -18,25 +18,31 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', url);
 
         // TODO create historic folder if non existing
-        // TODO which extension ? jpg ?
-        var path = APP_SUPPORT + 'historic/' + id + '.jpg';
+        var savePath = APP_SUPPORT + 'historic/' + id;
 
         var def = Q.defer();
 
-        var progressStream = progress({time: 100})
-            .on('progress', function (state) {
-                notifyProgress(def, state);
-            });
+        var progressStream = progress({time: 100}).on('progress', function (state) {
+            notifyProgress(def, state);
+        });
 
-        request(url)
+        var readableStream = request(url);
+        var writableStream = fs.createWriteStream(savePath);
+
+        readableStream
             .on('error', function (err) {
-                streamDidNotOpen(def, url, err);
-                return def.promise;
+                streamDidNotOpen(def, savePath, url, err);
             })
             .pipe(progressStream)
-            .pipe(fs.createWriteStream(path))
+            .pipe(writableStream)
+            .on('error', function (err) {
+                streamDidNotOpen(def, savePath, savePath, err);
+            })
             .on('close', function (err) {
-                photoDidSave(def, url, path, err);
+                if(err)
+                    photoDidNotSave(def, savePath, err);
+                else
+                    photoDidSave(def, url, savePath);
             });
 
         return def.promise;
@@ -44,38 +50,43 @@ var FileService = Base.extend({
 
     // Copy a `file` into Application Support with a generated name.
     // `id` is used as a name on disk.
-    importFile: function (file, id) {
+    importFile: function (fileUri, id) {
 
-        console.info('Initiating download of %s', file);
+        console.info('Initiating download of %s', fileUri);
 
         // TODO create historic folder if non existing
-        // TODO which extension ? jpg ?
-        var path = APP_SUPPORT + 'historic/' + id + '.jpg';
+        var savePath = APP_SUPPORT + 'historic/' + id;
 
         var def = Q.defer();
 
-        // TODO test with an invalid path
-        fs.stat(file, function (err, stats) {
+        fs.stat(fileUri, function (err, stats) {
 
             if(err){
-                streamDidNotOpen(def, file, err);
-                return def.promise;
+                streamDidNotOpen(def, null, fileUri, err);
+                return;
             }
 
-            var progressStream = progress({length: stats.size, time: 30})
-                .on('progress', function (state) {
-                    notifyProgress(def, state);
-                });
+            var progressStream = progress({length: stats.size, time: 30}).on('progress', function (state) {
+                notifyProgress(def, state);
+            });
 
-            fs.createReadStream(file)
+            var readableStream = fs.createReadStream(fileUri);
+            var writableStream = fs.createWriteStream(savePath);
+
+            readableStream
                 .on('error', function (err) {
-                    streamDidNotOpen(def, file, err);
-                    return def.promise;
+                    streamDidNotOpen(def, savePath, fileUri, err);
                 })
                 .pipe(progressStream)
-                .pipe(fs.createWriteStream(path))
+                .pipe(writableStream)
+                .on('error', function (err) {
+                    streamDidNotOpen(def, savePath, savePath, err);
+                })
                 .on('close', function (err) {
-                    photoDidSave(def, file, path, err);
+                    if(err)
+                        photoDidNotSave(def, savePath, err);
+                    else
+                        photoDidSave(def, fileUri, savePath);
                 });
 
         });
@@ -113,19 +124,30 @@ function notifyProgress(def, state){
     def.notify(state);
 }
 
-function photoDidSave(def, uri, filepath, err){
-    if(err) {
-        def.reject(err);
-        console.error('Failed to save photo on disk at %s: %o', filepath, err);
-    } else {
-        def.resolve(filepath);
-        console.info('Photo at %s saved on disk at %s', uri, filepath);
-    }
+function photoDidNotSave(def, savePath, err){
+    console.error('Failed to save photo on disk at %s: %o', savePath, err);
+    savePath && removePhotoOnErr(savePath);
+    def.reject(err);
 }
 
-function streamDidNotOpen(def, uri, err){
+function photoDidSave(def, openUri, savePath){
+    console.info('Photo at %s saved on disk at %s', openUri, savePath);
+    def.resolve(savePath);
+}
+
+// Could be either the read or write stream.
+// savePath and openUri might be the same.
+// Whatever scenario, if savePath is provided, it means the write stream was created, so we need to remove it.
+function streamDidNotOpen(def, savePath, openUri, err){
+    console.error('Failed to open stream from %s: %o', openUri, err);
+    savePath && removePhotoOnErr(savePath);
     def.reject(err);
-    console.error('Failed to open stream from %s: %o', uri, err);
+}
+
+function removePhotoOnErr(savePath){
+    fs.unlink(savePath, function (err) {
+        err && console.error('Can\'t remove photo at %s: ', savePath, err);
+    });
 }
 
 module.exports = FileService;
