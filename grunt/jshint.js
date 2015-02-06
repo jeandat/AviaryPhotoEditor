@@ -28,7 +28,7 @@ module.exports = {
         noyield       : false,
         strict        : false,     // true: Requires all functions run in ES5 Strict Mode
         loopfunc      : false,
-        expr          : false,
+        expr          : true,
         es5           : false,     // true: Allow ES5 syntax (ex: getters and setters)
 
         // Environments
