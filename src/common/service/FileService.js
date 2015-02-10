@@ -3,13 +3,20 @@ var fs = require('fs');
 var Q = require('Q');
 var request = require('request');
 var progress = require('progress-stream');
+var mkdirp = require('mkdirp');
 
-var HOME = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME'];
+var HOME = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
 var APP_SUPPORT = HOME + '/Library/Application Support/AviaryPhotoEditor/';
+var HISTORIC = APP_SUPPORT + 'historic/';
 
 var singleton;
 
 var FileService = Base.extend({
+
+    initialize: function () {
+        // Create the historic folder in Application Support if it doesn't exist
+        mkdirp.sync(HISTORIC, {mode: '0700'});
+    },
 
     // Download a photo on disk into Application Support from a `url`.
     // `id` is used as a name on disk.
@@ -18,7 +25,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', url);
 
         // TODO create historic folder if non existing
-        var savePath = APP_SUPPORT + 'historic/' + id;
+        var savePath = HISTORIC + id;
 
         var def = Q.defer();
 
@@ -55,7 +62,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', fileUri);
 
         // TODO create historic folder if non existing
-        var savePath = APP_SUPPORT + 'historic/' + id;
+        var savePath = HISTORIC + id;
 
         var def = Q.defer();
 
