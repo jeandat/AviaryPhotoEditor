@@ -1,3 +1,5 @@
+// jshint camelcase: false
+
 var files = [{
     src:'**/*.js',
     dest:'<%=build%>/',

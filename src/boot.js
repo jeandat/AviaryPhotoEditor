@@ -3,9 +3,9 @@ console.info('Hello, I\'m a node-webkit and Aviary SDK demo app');
 // Global shorcuts to avoid accessing window every time
 global.win = window;
 global.doc = win.doc;
-global.$ = window.$;
+global.$ = win.$;
 global.JST = win.JST;
-global.Backbone = window.Backbone;
+global.Backbone = win.Backbone;
 global.$body = $('body');
 global._ = win._;
 
