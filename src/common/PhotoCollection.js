@@ -1,11 +1,16 @@
 var singleton;
 
 var PhotoModel = get('common/PhotoModel');
-var fs = require('fs');
+var fileService = get('common/service/FileService').instance();
+var Q = require('Q');
 
 var PhotoCollection = Backbone.Collection.extend({
 
     model: PhotoModel,
+
+    // This is the path to the json file that store the current list of photos.
+    COLLECTION_PATH: fileService.HISTORIC + 'collection.json',
+
 
     // Sort the collection when a new PhotoModel is added by comparing the modification attribute.
     // According to natural order of date, meaning, most ancien first, most recent last.
@@ -16,6 +21,19 @@ var PhotoCollection = Backbone.Collection.extend({
         this.on('change:modification', this.sort);
     },
 
+    // Load collection from disk (json file)
+    init: function () {
+        var def = Q.defer();
+        fileService.readJSON(this.COLLECTION_PATH)
+            .then(function () {
+                // TODO
+            })
+            .fail(function () {
+                // TODO
+            });
+        return def.promise;
+    },
+
     // Override the push method by allowing 10 items only.
     // The eleventh will replace the oldest one.
     push: function () {
@@ -23,6 +41,11 @@ var PhotoCollection = Backbone.Collection.extend({
             this.remove(this.first());
         }
         Backbone.Collection.prototype.push.apply(this, arguments);
+
+    },
+
+    persist: function () {
+        return fileService.writeJSON(this.COLLECTION_PATH);
     },
 
     // Remove one or several models from collection and also from disk.
@@ -41,9 +64,7 @@ var PhotoCollection = Backbone.Collection.extend({
 });
 
 function removePhoto(model){
-    fs.unlink(model.get('uri'), function (err) {
-        err && console.error('Can\'t remove photo at %s: ', model.get('uri'), err);
-    });
+    return fileService.removeFile(model.get('uri'));
 }
 
 module.exports = PhotoCollection;

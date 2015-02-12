@@ -5,17 +5,24 @@ var request = require('request');
 var progress = require('progress-stream');
 var mkdirp = require('mkdirp');
 
-var HOME = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
-var APP_SUPPORT = HOME + '/Library/Application Support/AviaryPhotoEditor/';
-var HISTORIC = APP_SUPPORT + 'historic/';
-
 var singleton;
 
 var FileService = Base.extend({
 
+    // This is the path to the system HOME folder.
+    HOME: process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'],
+
+    // This is the path to the user Application Support folder (not the system one).
+    APP_SUPPORT: this.HOME + '/Library/Application Support/AviaryPhotoEditor/',
+
+    // This is the path to the historic folder inside Application Support in which we will store photos and metadata.
+    HISTORIC: this.APP_SUPPORT + 'historic/',
+
+
+
     initialize: function () {
         // Create the historic folder in Application Support if it doesn't exist
-        mkdirp.sync(HISTORIC, {mode: '0700'});
+        mkdirp.sync(this.HISTORIC, {mode: '0700'});
     },
 
     // Download a photo on disk into Application Support from a `url`.
@@ -25,7 +32,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', url);
 
         // TODO create historic folder if non existing
-        var savePath = HISTORIC + id;
+        var savePath = this.HISTORIC + id;
 
         var def = Q.defer();
 
@@ -62,7 +69,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', fileUri);
 
         // TODO create historic folder if non existing
-        var savePath = HISTORIC + id;
+        var savePath = this.HISTORIC + id;
 
         var def = Q.defer();
 
@@ -99,9 +106,51 @@ var FileService = Base.extend({
         });
 
         return def.promise;
+    },
+
+    // Read the content of a file and invoke `callback` `(err, content)` on success or error.
+    readJSON: function (filePath, callback, options) {
+        // TODO add deferred
+        fs.readFile(filePath, options, function (err, data) {
+            if (err){
+                return callback(err, null);
+            }
+            var content = null;
+            try {
+                content = JSON.parse(data);
+            }
+            catch (parseError) {
+                return callback(parseError, null);
+            }
+            callback(null, content);
+        });
+    },
+
+    // Write a JSON representation of an object into a file on disk.
+    // `callback (err)` is invoked on success or error.
+    writeJSON: function(filePath, obj, callback, options) {
+        // TODO add deferred
+        var str = '';
+        try {
+            str = JSON.stringify(obj, null, '    ');
+        }
+        catch (err) {
+            if (callback) {
+                return callback(err);
+            }
+        }
+        fs.writeFile(filePath, str, options, callback);
+    },
+
+    // Remove a file on disk from a a `path`.
+    removeFile: function (path){
+        fs.unlink(path, function (err) {
+            err && console.error('Can\'t remove file at %s: ', path, err);
+        });
     }
 
 }, {
+
     instance: function () {
         if (!singleton) {
             singleton = new FileService();
