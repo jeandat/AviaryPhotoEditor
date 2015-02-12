@@ -21,6 +21,8 @@ var editorView = get('editor/EditorView').instance();
 var menuView = get('menu/MenuView').instance();
 var nativeMenu = get('menu/NativeMenu').instance();
 var dragNDropService = get('common/service/DragNDropService').instance();
+var photoCollection = get('common/PhotoCollection').instance();
+var gui = win.require('nw.gui');
 
 
 // Create a native Mac OS X menu
@@ -38,6 +40,11 @@ $body.append(editorView.render().el);
 // Start the drang and drop service
 dragNDropService.listen();
 
+
+// Load the previous photo collection historic
 // Show the app after everything is ready
-var gui = win.require('nw.gui');
-gui.Window.get().show();
+photoCollection.init().then(function () {
+    gui.Window.get().show();
+}).done();
+
+

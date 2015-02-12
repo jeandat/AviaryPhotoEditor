@@ -2,7 +2,6 @@ var singleton;
 
 var PhotoModel = get('common/PhotoModel');
 var fileService = get('common/service/FileService').instance();
-var Q = require('Q');
 
 var PhotoCollection = Backbone.Collection.extend({
 
@@ -17,21 +16,24 @@ var PhotoCollection = Backbone.Collection.extend({
     comparator: 'modification',
 
     initialize: function () {
-        // Resort the collection when the modification attribute is updated.
+        // Sort the collection when the modification attribute is updated.
         this.on('change:modification', this.sort);
+        this.on('change add remove', this.persist);
     },
 
-    // Load collection from disk (json file)
+    // Load collection from disk (json file).
     init: function () {
-        var def = Q.defer();
-        fileService.readJSON(this.COLLECTION_PATH)
-            .then(function () {
-                // TODO
+        var self = this;
+        return fileService.readJSON(this.COLLECTION_PATH)
+            .then(function (items) {
+                // #set is synchronous so it works but if the content of this function was asynchronous, it would be necessary to create a
+                // wrapper deferred.
+                console.info('Loaded an existing photo collection: %o', items);
+                self.set(items);
             })
             .fail(function () {
-                // TODO
+                console.info('No existing photo collection, starting fresh');
             });
-        return def.promise;
     },
 
     // Override the push method by allowing 10 items only.
@@ -45,7 +47,7 @@ var PhotoCollection = Backbone.Collection.extend({
     },
 
     persist: function () {
-        return fileService.writeJSON(this.COLLECTION_PATH);
+        return fileService.writeJSON(this.COLLECTION_PATH, this.toJSON());
     },
 
     // Remove one or several models from collection and also from disk.

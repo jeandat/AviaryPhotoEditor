@@ -4,20 +4,24 @@ var Q = require('Q');
 var request = require('request');
 var progress = require('progress-stream');
 var mkdirp = require('mkdirp');
-
 var singleton;
+
+
+
+// This is the path to the system HOME folder.
+var HOME = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
+// This is the path to the user Application Support folder (not the system one).
+var APP_SUPPORT = HOME + '/Library/Application Support/AviaryPhotoEditor/';
+// This is the path to the historic folder inside Application Support in which we will store photos and metadata.
+var HISTORIC = APP_SUPPORT + 'historic/';
+
+
 
 var FileService = Base.extend({
 
-    // This is the path to the system HOME folder.
-    HOME: process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'],
-
-    // This is the path to the user Application Support folder (not the system one).
-    APP_SUPPORT: this.HOME + '/Library/Application Support/AviaryPhotoEditor/',
-
-    // This is the path to the historic folder inside Application Support in which we will store photos and metadata.
-    HISTORIC: this.APP_SUPPORT + 'historic/',
-
+    HOME: HOME,
+    APP_SUPPORT: APP_SUPPORT,
+    HISTORIC: HISTORIC,
 
 
     initialize: function () {
@@ -109,37 +113,41 @@ var FileService = Base.extend({
     },
 
     // Read the content of a file and invoke `callback` `(err, content)` on success or error.
-    readJSON: function (filePath, callback, options) {
-        // TODO add deferred
-        fs.readFile(filePath, options, function (err, data) {
-            if (err){
-                return callback(err, null);
-            }
-            var content = null;
-            try {
-                content = JSON.parse(data);
-            }
-            catch (parseError) {
-                return callback(parseError, null);
-            }
-            callback(null, content);
-        });
+    readJSON: function (filePath, options) {
+        var def = Q.defer();
+        var readFile = Q.nbind(fs.readFile, fs);
+        readFile(filePath, options)
+            .then(function(data){
+                try {
+                    def.resolve(JSON.parse(data));
+                    console.info('Read file %s', filePath);
+                }
+                catch (err) {
+                    console.error('Failed to read file %s', filePath);
+                    def.reject(err);
+                }
+            })
+            .fail(function (err) {
+                console.error('Failed to read file %s', filePath);
+                def.reject(err);
+            });
+        return def.promise;
     },
 
     // Write a JSON representation of an object into a file on disk.
     // `callback (err)` is invoked on success or error.
-    writeJSON: function(filePath, obj, callback, options) {
-        // TODO add deferred
-        var str = '';
+    writeJSON: function(filePath, obj, options) {
+        var def = Q.defer();
         try {
-            str = JSON.stringify(obj, null, '    ');
+            var str = JSON.stringify(obj, null, '    ');
+            fs.writeFile(filePath, str, options, def.makeNodeResolver());
+            console.info('Written file %s', filePath);
         }
         catch (err) {
-            if (callback) {
-                return callback(err);
-            }
+            console.error('Failed to write file %s', filePath);
+            def.reject(err);
         }
-        fs.writeFile(filePath, str, options, callback);
+        return def.promise;
     },
 
     // Remove a file on disk from a a `path`.
