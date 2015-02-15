@@ -11,12 +11,12 @@ module.exports = {
         banner: '/* John Grey on <%= grunt.template.today() %> */'
     },
     dev:{
+        options:{
+            compress:false
+        },
         files:files
     },
     dist:{
-        options:{
-            compress:true
-        },
         files:files
     }
 };
