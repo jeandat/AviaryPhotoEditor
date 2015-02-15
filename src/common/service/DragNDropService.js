@@ -5,6 +5,9 @@ var nativeOnDragOver, nativeOnDrop, singleton;
 
 // Service that defines what happens when dragging a file over the window.
 var DragNDropService = Base.extend({
+
+    URI_TYPE: 'text/uri-list',
+
     // Constructor
     initialize: function () {
         _.bindAll(this, 'onDrop', 'onDragOver');
@@ -33,8 +36,8 @@ var DragNDropService = Base.extend({
         event.preventDefault();
 
         // Process urls
-        if(_.contains(event.dataTransfer.types, DragNDropService.URI_TYPE)){
-            this.processUrl(event.dataTransfer.getData(DragNDropService.URI_TYPE));
+        if(_.contains(event.dataTransfer.types, this.URI_TYPE)){
+            this.processUrl(event.dataTransfer.getData(this.URI_TYPE));
         }
 
         // Treating only the first file if there is several
@@ -46,16 +49,19 @@ var DragNDropService = Base.extend({
 
     processUrl: function (url) {
         console.info('Importing url: %s', url);
-        var view = new ImportView({url:url});
-        $body.append(view.render().el);
-        // TODO  remove the window when hidden
+        this._process({url:url});
     },
 
     processFile: function (file) {
         console.info('Importing file: ', file);
-        var view = new ImportView({file:file});
+        this._process({file:file});
+    },
+
+    _process: function (options) {
+        var view = new ImportView(options);
         $body.append(view.render().el);
-        // TODO  remove the window when hidden
+        view.show();
+        view.on('hide', view.remove);
     },
 
     // No op on drag over
@@ -68,9 +74,7 @@ var DragNDropService = Base.extend({
             singleton = new DragNDropService();
         }
         return singleton;
-    },
-
-    URI_TYPE: 'text/uri-list'
+    }
 });
 
 module.exports = DragNDropService;

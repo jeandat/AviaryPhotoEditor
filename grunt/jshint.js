@@ -93,7 +93,9 @@ module.exports = {
             'Backbone' : true,
             '_'        : true,
             'JST'      : true,
-            'DEV'      : true
+            'DEV'      : true,
+            'Snap'     : true,
+            'mina'     : true
         }
     },
     dev:{
