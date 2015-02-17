@@ -61,7 +61,6 @@ var DragNDropService = Base.extend({
         var view = new ImportView(options);
         $body.append(view.render().el);
         view.show();
-        view.on('hide', view.remove);
     },
 
     // No op on drag over
