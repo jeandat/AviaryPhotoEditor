@@ -1,4 +1,3 @@
-var Base = get('common/Base');
 var fs = require('fs');
 var Q = require('Q');
 var request = require('request');

@@ -6,6 +6,7 @@ default:
     - 'autoprefixer'
     - 'jade:jst'
     - 'jade:index'
+    - 'mokuai'
     - 'uglify:dev'
     - 'copy'
 
@@ -17,6 +18,7 @@ dist:
     - 'autoprefixer'
     - 'jade:jst'
     - 'jade:index'
+    - 'mokuai'
     - 'uglify:dist'
     - 'copy'
     - 'nodewebkit'

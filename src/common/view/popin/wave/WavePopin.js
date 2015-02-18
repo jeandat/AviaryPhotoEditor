@@ -100,11 +100,11 @@ var WavePopin = Backbone.View.extend({
     // Will animate the path of the background (wave effect).
     _animatePath: function (callback) {
         var morphEl = this.$('.wave-popin-shape');
-        var ssvg = new win.Snap(morphEl.find('svg')[0]);
+        var ssvg = new Snap(morphEl.find('svg')[0]);
         var path = ssvg.select( 'path' );
         this._initialPath = path.attr('d');
         var pathOpen = morphEl.attr( 'data-morph-open' );
-        path.animate({'path': pathOpen}, 400, win.mina.easeinout, callback);
+        path.animate({'path': pathOpen}, 400, mina.easeinout, callback);
     },
 
     // Restore the default path to prepare the next transition.

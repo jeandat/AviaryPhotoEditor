@@ -1,4 +1,4 @@
-var fileService = get('common/service/FileService').instance();
+var fileService = FileService.instance();
 
 var PhotoModel = Backbone.Model.extend({
 

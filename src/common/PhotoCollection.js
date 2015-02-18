@@ -1,7 +1,6 @@
 var singleton;
 
-var PhotoModel = get('common/PhotoModel');
-var fileService = get('common/service/FileService').instance();
+var fileService = FileService.instance();
 
 var PhotoCollection = Backbone.Collection.extend({
 

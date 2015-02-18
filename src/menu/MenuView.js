@@ -1,9 +1,6 @@
 var template = JST['menu/menu']();
-
 var singleton;
-
-var editorView = get('editor/EditorView').instance();
-var ImportView = get('import/ImportView');
+var editorView = EditorView.instance();
 
 // This view is a singleton
 var MenuView = Backbone.View.extend({

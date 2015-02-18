@@ -1,5 +1,3 @@
-var ImportView = get('import/ImportView');
-var Base = get('common/Base');
 
 var nativeOnDragOver, nativeOnDrop, singleton;
 
@@ -15,17 +13,17 @@ var DragNDropService = Base.extend({
 
     // Dragging a file over the window will trigger an import view which will import the file in the app.
     listen: function () {
-        nativeOnDragOver = win.ondragover;
-        nativeOnDrop = win.ondrop;
+        nativeOnDragOver = window.ondragover;
+        nativeOnDrop = window.ondrop;
 
-        win.ondragover = this.onDragOver;
-        win.ondrop = this.onDrop;
+        window.ondragover = this.onDragOver;
+        window.ondrop = this.onDrop;
     },
 
     // Restore the native behavior
     stopListening: function () {
-        win.ondragover = nativeOnDragOver;
-        win.ondrop = nativeOnDrop;
+        window.ondragover = nativeOnDragOver;
+        window.ondrop = nativeOnDrop;
     },
 
     // When the user release the drag in the window, we can analyse what was dragged and eventually render the import view to treat it.

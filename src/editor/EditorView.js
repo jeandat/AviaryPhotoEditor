@@ -1,9 +1,8 @@
 var template = JST['editor/editor']();
-var Aviary = win.Aviary;
 
 var editor, singleton;
 
-var fileService = get('common/service/FileService').instance();
+var fileService = FileService.instance();
 
 // This view is a singleton.
 var EditorView = Backbone.View.extend({

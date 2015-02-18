@@ -1,9 +1,6 @@
 var template = JST['import/import'];
-var photoCollection = get('common/PhotoCollection').instance();
-var PhotoModel = get('common/PhotoModel');
-var fileService = get('common/service/FileService').instance();
-var Utils = get('common/utils/Utils');
-var WavePopin = get('common/view/popin/wave/WavePopin');
+var photoCollection = PhotoCollection.instance();
+var fileService = FileService.instance();
 
 var ImportView = WavePopin.extend({
 

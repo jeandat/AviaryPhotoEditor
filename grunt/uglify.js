@@ -1,10 +1,8 @@
 // jshint camelcase: false
 
 var files = [{
-    src:'**/*.js',
-    dest:'<%=build%>/',
-    expand:true,
-    cwd:'src'
+    src:'<%=build%>/app.js',
+    dest:'<%=build%>/app.js'
 }];
 
 module.exports = {
@@ -12,8 +10,8 @@ module.exports = {
         mangle:true,
         compress:true,
         beautify:false,
-        report:'false',
-        banner:'"use strict";'
+        report:'false'
+        //banner:'"use strict";'
     },
     dev:{
         options:{
