@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Nunito-Regular'),
+        url(http://fonts.gstatic.com/s/nunito/v7/mUangSEE-PUZJVLGz-Lt6-vvDin1pK8aKteLpeZ5c0A.ttf) format('truetype');
+}
+@font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Nunito-Bold'),
+        url(http://fonts.gstatic.com/s/nunito/v7/TttUCfJ272GBgSKaOaD7KiZ2oysoEQEeKwjgmXLRnTc.ttf) format('truetype');
+}

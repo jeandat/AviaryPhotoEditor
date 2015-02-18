@@ -11,7 +11,9 @@ module.exports = {
         },{
             src:'<%=jsFiles.vendors%>',
             dest:'<%=build%>/'
-        },{
+        },
+        // Copy icomoon font files
+        {
             src:'*',
             dest:'<%=build%>/font/icomoon/',
             expand:true,

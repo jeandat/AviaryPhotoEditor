@@ -25,6 +25,14 @@ var photoCollection = get('common/PhotoCollection').instance();
 var gui = win.require('nw.gui');
 
 
+// Load the Nunito font.
+// For simplicity sake and to test a new workaround that prevent the FOIT effect, I choosed to use a web technique
+// and not integrate the fonts directly in the app.
+new win.FontFaceObserver( 'Nunito', {}).check().then( function(){
+    win.document.documentElement.className += ' fonts-loaded';
+});
+
+
 // Create a native Mac OS X menu
 nativeMenu.create();
 

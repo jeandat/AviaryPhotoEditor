@@ -1,7 +1,8 @@
 var files = {
     '<%=build%>/app.css': [
         'src/**/*.styl',
-        'resources/font/icomoon/style.css'
+        'resources/font/icomoon/*.css',
+        'resources/font/nunito/*.css'
     ]
 };
 
