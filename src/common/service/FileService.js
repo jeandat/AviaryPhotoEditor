@@ -25,7 +25,7 @@ var FileService = Base.extend({
 
     initialize: function () {
         // Create the historic folder in Application Support if it doesn't exist
-        mkdirp.sync(this.HISTORIC, {mode: '0700'});
+        mkdirp.sync(HISTORIC, {mode: '0700'});
     },
 
     // Download a photo on disk into Application Support from a `url`.
@@ -35,7 +35,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', url);
 
         // TODO create historic folder if non existing
-        var savePath = this.HISTORIC + id;
+        var savePath = HISTORIC + id;
 
         var def = Q.defer();
 
@@ -72,7 +72,7 @@ var FileService = Base.extend({
         console.info('Initiating download of %s', fileUri);
 
         // TODO create historic folder if non existing
-        var savePath = this.HISTORIC + id;
+        var savePath = HISTORIC + id;
 
         var def = Q.defer();
 
