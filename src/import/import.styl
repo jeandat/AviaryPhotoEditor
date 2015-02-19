@@ -8,8 +8,36 @@
         color #eee
 
         .uri
-            margin-top 2.5rem
-            font-size 1.1rem
+            padding 0 1rem
+            margin-top 20px
             opacity 0
+            background rgba(white,.1)
+            line-height 60px
+
             transition-property opacity
             transition-delay 200ms
+
+            display flex
+
+            .path
+                flex 1
+                font-family 'Poiret One'
+                margin-left 16px
+
+        progress
+            -webkit-appearance none
+            width 80%
+            margin-top 30px
+            height 15px
+
+            &::-webkit-progress-bar
+                background none
+                border 2px solid #fff
+                border-radius 10px
+
+            &::-webkit-progress-value
+                border-radius 10px
+                background-color #fff
+
+
+

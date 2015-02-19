@@ -15,7 +15,7 @@ module.exports = function(){
     // Load the Nunito font.
     // For simplicity sake and to test a new workaround that prevent the FOIT effect, I choosed to use a web technique
     // and not integrate the fonts directly in the app.
-    new FontFaceObserver( 'Nunito', {}).check().then( function(){
+    new FontFaceObserver( 'Nunito, Poiret One', {}).check().then( function(){
         document.documentElement.className += ' fonts-loaded';
     });
 

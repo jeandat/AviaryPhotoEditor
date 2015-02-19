@@ -12,3 +12,10 @@
     src: local('Nunito-Bold'),
         url(http://fonts.gstatic.com/s/nunito/v7/TttUCfJ272GBgSKaOaD7KiZ2oysoEQEeKwjgmXLRnTc.ttf) format('truetype');
 }
+
+@font-face {
+    font-family: 'Poiret One';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Poiret One'), local('PoiretOne-Regular'), url(http://fonts.gstatic.com/s/poiretone/v4/HrI4ZJpJ3Fh0wa5ofYMK8cDdSZkkecOE1hvV7ZHvhyU.ttf) format('truetype');
+}

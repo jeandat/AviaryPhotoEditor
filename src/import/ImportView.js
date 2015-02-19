@@ -33,11 +33,21 @@ var ImportView = WavePopin.extend({
     },
 
     importUrl: function () {
-        return fileService.importUrl(this.options.url, this.photoModel.id).then(this.registerPhoto);
+        var self = this;
+        return fileService.importUrl(this.options.url, this.photoModel.id)
+            .progress(function (state) {
+                self.$('progress').attr('value', state.percentage);
+            })
+            .then(this.registerPhoto);
     },
 
     importFile: function () {
-        return fileService.importFile(this.options.file, this.photoModel.id).then(this.registerPhoto);
+        var self = this;
+        return fileService.importFile(this.options.file, this.photoModel.id)
+            .progress(function (state) {
+                self.$('progress').attr('value', state.percentage);
+            })
+            .then(this.registerPhoto);
     },
 
     startImport: function () {
@@ -55,6 +65,9 @@ var ImportView = WavePopin.extend({
     registerPhoto: function (pathOnDisk) {
         this.photoModel.set('uri', pathOnDisk);
         photoCollection.push(this.photoModel);
+        this.trigger('import', this.photoModel);
+        Backbone.trigger('import', this, this.photoModel);
+        this.hide();
     }
 });
 

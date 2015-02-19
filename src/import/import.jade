@@ -1,2 +1,5 @@
-p.uri Importing from: #{file}
-//- progress(value='0.2')
+div.uri
+    div.label Importing from:
+    div.path.ellipsis #{url||file}
+
+progress(max='100')

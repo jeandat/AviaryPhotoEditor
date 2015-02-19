@@ -125,7 +125,7 @@ var WavePopin = Backbone.View.extend({
         // When the opacity transition is done, we can resolve the deferred
         var self = this;
         $el.one('csstransitionend', function () {
-            this._restorePath();
+            self._restorePath();
             def.resolve();
             self.triggerEvent('hide');
         });
