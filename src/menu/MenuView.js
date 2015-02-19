@@ -22,11 +22,12 @@ var MenuView = Backbone.View.extend({
 
         // TODO Move in menudev
         'click #import-button':function(){
-            //var dragNDropService = get('common/service/DragNDropService').instance();
-            //dragNDropService.processFile('/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg');
-            var view = new ImportView({file: '/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg'});
-            $body.append(view.render().el);
-            view.show();
+            // http://kandkadventures.com/wp-content/uploads/2013/06/Eiffel-Tower-Paris-France.jpg
+            var dragNDropService = DragNDropService.instance();
+            dragNDropService.processFile('/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg');
+            //var view = new ImportView({file: '/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg'});
+            //$body.append(view.render().el);
+            //view.show();
         }
     },
 

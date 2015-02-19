@@ -33,6 +33,10 @@ var DragNDropService = Base.extend({
         // We don't want the navigator to replace the content of the page with the dragged content
         event.preventDefault();
 
+        _.forEach(event.dataTransfer.types, function (type) {
+            console.debug('%s: %o', type, event.dataTransfer.getData(type));
+        });
+
         // Process urls
         if(_.contains(event.dataTransfer.types, this.URI_TYPE)){
             this.processUrl(event.dataTransfer.getData(this.URI_TYPE));
@@ -58,7 +62,9 @@ var DragNDropService = Base.extend({
     _process: function (options) {
         var view = new ImportView(options);
         $body.append(view.render().el);
-        view.show();
+        view.show().done(function () {
+            view.startImport();
+        });
     },
 
     // No op on drag over
