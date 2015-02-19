@@ -28,6 +28,15 @@ var NativeMenu = Base.extend({
                 editorView.toggleContainPhoto();
             }
         }));
+        editorSubMenu.append(new MenuItem({
+            type: 'checkbox',
+            label: 'Real size',
+            checked: false,
+            enabled: false,
+            click: function () {
+                console.warn('Not implemented yet');
+            }
+        }));
 
         // File menu
         var fileSubMenu = new Menu();
