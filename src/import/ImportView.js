@@ -33,21 +33,19 @@ var ImportView = WavePopin.extend({
     },
 
     importUrl: function () {
-        var self = this;
-        return fileService.importUrl(this.options.url, this.photoModel.id)
-            .progress(function (state) {
-                self.$('progress').attr('value', state.percentage);
-            })
-            .then(this.registerPhoto);
+        this._monitorImport(fileService.importUrl(this.options.url, this.photoModel.id));
     },
 
     importFile: function () {
+        this._monitorImport(fileService.importFile(this.options.file, this.photoModel.id));
+    },
+
+    // Monitor the progress of the importation and take action when done.
+    _monitorImport: function (def) {
         var self = this;
-        return fileService.importFile(this.options.file, this.photoModel.id)
-            .progress(function (state) {
-                self.$('progress').attr('value', state.percentage);
-            })
-            .then(this.registerPhoto);
+        def.progress(function (state) {
+            self.$('progress').attr('value', state.percentage);
+        }).then(this.registerPhoto);
     },
 
     startImport: function () {
@@ -65,9 +63,9 @@ var ImportView = WavePopin.extend({
     registerPhoto: function (pathOnDisk) {
         this.photoModel.set('uri', pathOnDisk);
         photoCollection.push(this.photoModel);
-        this.trigger('import', this.photoModel);
-        Backbone.trigger('import', this, this.photoModel);
-        this.hide();
+        //this.trigger('import', this.photoModel);
+        //Backbone.trigger('import', this, this.photoModel);
+        //this.hide();
     }
 });
 
