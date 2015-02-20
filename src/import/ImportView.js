@@ -63,9 +63,9 @@ var ImportView = WavePopin.extend({
     registerPhoto: function (pathOnDisk) {
         this.photoModel.set('uri', pathOnDisk);
         photoCollection.push(this.photoModel);
-        //this.trigger('import', this.photoModel);
-        //Backbone.trigger('import', this, this.photoModel);
-        //this.hide();
+        this.trigger('import', this.photoModel);
+        Backbone.trigger('import', this, this.photoModel);
+        setTimeout(this.hide,1000);
     }
 });
 
