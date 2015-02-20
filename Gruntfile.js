@@ -6,7 +6,13 @@ module.exports = function(grunt) {
         data:{
             build:'build',
             jsFiles:{
-                vendors:['vendors/jQuery/*.js','vendors/LoDash/*.js','vendors/**/*.js']
+                vendors:[
+                    'vendors/jQuery/*.js',
+                    'vendors/LoDash/*.js',
+                    'vendors/Aviary/editor.js',
+                    'vendors/**/*.js',
+                    '!vendors/Aviary/featherpaint.js'
+                ]
             }
         }
     });

@@ -36,6 +36,11 @@ module.exports = function(){
     dragNDropService.listen();
 
 
+    // Install mocks for some Aviary sdk dependencies.
+    // All dependencies should be in the app and not downloaded like in classical web.
+    // TODO intercept xhr
+
+
     // Load the previous photo collection historic
     // Show the app after everything is ready
     // The last .done() instruction is a failsafe in case there was no fail block in the chain. If a rejected promise is not caught,
