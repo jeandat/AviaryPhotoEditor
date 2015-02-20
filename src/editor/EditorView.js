@@ -1,7 +1,7 @@
 var template = JST['editor/editor']();
 var fileService = FileService.instance();
 var Q = require('Q');
-var editor, singleton;
+var singleton;
 
 // This view is a singleton.
 var EditorView = Backbone.View.extend({
@@ -9,7 +9,7 @@ var EditorView = Backbone.View.extend({
     id:'editor',
 
     initialize: function () {
-        _.bindAll(this, 'onLoad', 'onError', 'onReady', 'onSave', 'onClose', 'toggle', 'onSaveButtonClicked');
+        _.bindAll(this, 'onLoad', 'onError', 'onReady', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
         this.listenTo(Backbone, 'import', this.photoDidImported);
     },
 
@@ -24,8 +24,8 @@ var EditorView = Backbone.View.extend({
         this.$photoRight = this.$('#photo-right img');
 
         // Create the Aviary Editor
-        if(!editor){
-            editor = new Aviary.Feather({
+        if(!this.editor){
+            this.editor = new Aviary.Feather({
                 apiKey:'3b1eb7150b164beebe6996cea9086c57',
                 tools:'all',
                 appendTo:this.id,
@@ -46,11 +46,12 @@ var EditorView = Backbone.View.extend({
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
     setImage: function (url) {
         var self = this;
-        this.close(true).then(function () {
+        this.closePanes().then(function () {
+            self.shutdownEditor();
             self.$photo.attr('src', url);
             self.$photoLeft.attr('src', url);
             self.$photoRight.attr('src', url);
-            self.open();
+            self.launchEditor();
         });
     },
 
@@ -59,59 +60,49 @@ var EditorView = Backbone.View.extend({
     },
 
     // Make available the aviary editor (from loaded to ready state).
-    launch: function () {
+    launchEditor: function () {
         var img = this.$photo[0];
-        editor.launch({
+        this.editor.launch({
             image:img,
             url:img.src,
             onReady:this.onReady
         });
     },
 
-    // Show/Hide the Aviary editor.
-    toggle: function () {
-        return this.$el.hasClass('open') ? this.close(false) : this.open();
+    shutdownEditor: function () {
+        this.editor.close();
+        this.editorClosed = true;
     },
 
-    open: function () {
+    // Show/Hide the Aviary editor.
+    togglePanes: function () {
+        return this.$el.hasClass('open') ? this.closePanes(false) : this.openPanes();
+    },
+
+    openPanes: function () {
         var def = Q.defer();
-        var self = this;
         var $el = this.$el;
         if($el.hasClass('open')){
             def.resolve();
-            return def.promise;
         }
-        if(self.aviaryEditorClosed){
-            self.launch();
-            self.aviaryEditorClosed = false;
+        else {
+            $el.one('csstransitionend', def.resolve);
+            $el.addClass('open');
         }
-        $el.on('csstransitionend', function () {
-            def.resolve();
-        });
-        // TODO we need two methods, one for the panes, one for the aviary editor.
-        // TODO The aviary editor code should factorized in its own class to avoid confusion.
-        $el.addClass('open');
         return def.promise;
     },
 
     // Close and hide the Aviary editor.
-    // `closeAviaryEditor` if true, the aviary editor is also closed.
-    close: function (closeAviaryEditor) {
+    closePanes: function () {
         var def = Q.defer();
-        var self = this;
         var $el = this.$el;
         if(!$el.hasClass('open')){
             def.resolve();
-            return def.promise;
         }
-        $el.on('csstransitionend', function () {
-            if(closeAviaryEditor){
-                editor.close();
-                self.aviaryEditorClosed = true;
-            }
-            def.resolve();
-        });
-        $el.removeClass('open');
+        else {
+            $el.one('csstransitionend', def.resolve);
+            $el.removeClass('open');
+        }
         return def.promise;
     },
 
@@ -122,6 +113,7 @@ var EditorView = Backbone.View.extend({
 
     // Callback when aviary editor is ready.
     onReady: function () {
+        this.editorClosed = false;
         console.debug('Aviary editor ready');
         this.trigger('ready', this);
         Backbone.trigger('editor:ready', this);

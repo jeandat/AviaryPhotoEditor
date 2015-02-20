@@ -17,7 +17,6 @@ var MenuView = Backbone.View.extend({
         // TODO Move in menudev
         'click #launch-button':function(){
             editorView.setImage('img/paris.jpg');
-            editorView.launch();
         },
 
         // TODO Move in menudev
@@ -46,7 +45,7 @@ var MenuView = Backbone.View.extend({
     },
 
     editPhoto: function () {
-        editorView.toggle();
+        editorView.togglePanes();
     },
 
     showTutorial: function () {
