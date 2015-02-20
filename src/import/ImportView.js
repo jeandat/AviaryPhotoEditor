@@ -33,39 +33,52 @@ var ImportView = WavePopin.extend({
     },
 
     importUrl: function () {
-        this._monitorImport(fileService.importUrl(this.options.url, this.photoModel.id));
+        return this._monitorImport(fileService.importUrl(this.options.url, this.photoModel.id));
     },
 
     importFile: function () {
-        this._monitorImport(fileService.importFile(this.options.file, this.photoModel.id));
+        return this._monitorImport(fileService.importFile(this.options.file, this.photoModel.id));
     },
 
     // Monitor the progress of the importation and take action when done.
     _monitorImport: function (def) {
         var self = this;
-        def.progress(function (state) {
+        return def.progress(function (state) {
             self.$('progress').attr('value', state.percentage);
         }).then(this.registerPhoto);
     },
 
-    startImport: function () {
+    import: function () {
+        var promise;
         if(this.options.url){
-            this.importUrl();
+            promise = this.importUrl();
         }
         else if(this.options.file){
-            this.importFile();
+            promise = this.importFile();
         }
         else {
             throw new Error(1, 'You can only import a url or a file');
         }
+        promise.fail(function (err) {
+            // TODO show error message in place of the progress bar
+            console.error('Import failed: %o', err);
+            // TODO Add a cross in the right corner ?
+        });
     },
 
     registerPhoto: function (pathOnDisk) {
         this.photoModel.set('uri', pathOnDisk);
         photoCollection.push(this.photoModel);
-        this.trigger('import', this.photoModel);
-        Backbone.trigger('import', this, this.photoModel);
-        setTimeout(this.hide,1000);
+        var self = this;
+        var def = Q.defer();
+        setTimeout(function () {
+            self.hide().then(function () {
+                def.resolve();
+                self.trigger('import', self.photoModel);
+                Backbone.trigger('import', self, self.photoModel);
+            });
+        },1000);
+        return def.promise;
     }
 });
 

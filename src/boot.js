@@ -3,6 +3,10 @@ module.exports = function(){
     console.info('Hello, I\'m a node-webkit and Aviary SDK demo app');
 
 
+    // Define some globals used everywhere
+    window.Q = require('Q');
+
+
     // Dependencies
     var editorView = EditorView.instance();
     var menuView = MenuView.instance();

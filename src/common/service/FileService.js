@@ -1,5 +1,4 @@
 var fs = require('fs');
-var Q = require('Q');
 var request = require('request');
 var progress = require('progress-stream');
 var mkdirp = require('mkdirp');

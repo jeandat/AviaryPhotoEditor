@@ -1,5 +1,4 @@
-
-var nativeOnDragOver, nativeOnDrop, singleton;
+var nativeOnDragOver, nativeOnDrop, singleton, currentView;
 
 // Service that defines what happens when dragging a file over the window.
 var DragNDropService = Base.extend({
@@ -60,11 +59,16 @@ var DragNDropService = Base.extend({
     },
 
     _process: function (options) {
-        var view = new ImportView(options);
-        $body.append(view.render().el);
-        view.show().done(function () {
-            view.startImport();
-        });
+        if(currentView){
+            currentView.hide().then(function () {
+                currentView.remove();
+                currentView = null;
+                createViewFn(options);
+            });
+        }
+        else{
+            createViewFn(options);
+        }
     },
 
     // No op on drag over
@@ -79,5 +83,13 @@ var DragNDropService = Base.extend({
         return singleton;
     }
 });
+
+function createViewFn(options) {
+    currentView = new ImportView(options);
+    $body.append(currentView.render().el);
+    currentView.show().done(function () {
+        currentView.import();
+    });
+}
 
 module.exports = DragNDropService;

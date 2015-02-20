@@ -1,5 +1,4 @@
 var template = JST['common/view/popin/wave/wave-popin'];
-var Q = require('Q');
 
 // Class that define a popin component which appears from the bottom with a wave effect.
 // THe popin content occupy a small portions of the screen. The rest is an overlay that block click outside.

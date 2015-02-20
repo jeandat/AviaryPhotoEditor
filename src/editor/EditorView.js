@@ -1,6 +1,5 @@
 var template = JST['editor/editor']();
 var fileService = FileService.instance();
-var Q = require('Q');
 var singleton;
 
 // This view is a singleton.
@@ -9,7 +8,7 @@ var EditorView = Backbone.View.extend({
     id:'editor',
 
     initialize: function () {
-        _.bindAll(this, 'onLoad', 'onError', 'onReady', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
+        _.bindAll(this, 'onLoad', 'onError', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
         this.listenTo(Backbone, 'import', this.photoDidImported);
     },
 
@@ -46,12 +45,13 @@ var EditorView = Backbone.View.extend({
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
     setImage: function (url) {
         var self = this;
-        this.closePanes().then(function () {
+        return this.closePanes().then(function () {
             self.shutdownEditor();
             self.$photo.attr('src', url);
             self.$photoLeft.attr('src', url);
             self.$photoRight.attr('src', url);
-            self.launchEditor();
+            // Returns a new promise
+            return self.launchEditor();
         });
     },
 
@@ -62,16 +62,38 @@ var EditorView = Backbone.View.extend({
     // Make available the aviary editor (from loaded to ready state).
     launchEditor: function () {
         var img = this.$photo[0];
-        this.editor.launch({
-            image:img,
-            url:img.src,
-            onReady:this.onReady
-        });
+        var def = Q.defer();
+        var self = this;
+
+        if(!this.editorClosed){
+            def.reject('Editor already launched');
+        }
+        else{
+            this.editor.launch({
+                image:img,
+                url:img.src,
+                onReady: function () {
+                    self.editorClosed = false;
+                    console.debug('Aviary editor ready');
+                    def.resolve();
+                    self.trigger('ready', this);
+                    Backbone.trigger('editor:ready', this);
+                },
+                onError: function (err) {
+                    self.onError(err);
+                    def.reject(err);
+                }
+            });
+        }
+
+        return def.promise;
     },
 
     shutdownEditor: function () {
-        this.editor.close();
-        this.editorClosed = true;
+        if(!this.editorClosed){
+            this.editor.close();
+            this.editorClosed = true;
+        }
     },
 
     // Show/Hide the Aviary editor.
@@ -109,14 +131,6 @@ var EditorView = Backbone.View.extend({
     // Callback when aviary editor is loaded.
     onLoad: function () {
         console.debug('Aviary editor loaded');
-    },
-
-    // Callback when aviary editor is ready.
-    onReady: function () {
-        this.editorClosed = false;
-        console.debug('Aviary editor ready');
-        this.trigger('ready', this);
-        Backbone.trigger('editor:ready', this);
     },
 
     // Callback on errors of the aviary editor.

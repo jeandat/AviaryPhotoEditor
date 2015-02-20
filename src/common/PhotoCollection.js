@@ -1,5 +1,4 @@
 var singleton;
-
 var fileService = FileService.instance();
 
 var PhotoCollection = Backbone.Collection.extend({
