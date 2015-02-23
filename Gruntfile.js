@@ -10,8 +10,7 @@ module.exports = function(grunt) {
                     'vendors/jQuery/*.js',
                     'vendors/LoDash/*.js',
                     'vendors/Aviary/editor.js',
-                    'vendors/**/*.js',
-                    '!vendors/Aviary/featherpaint.js'
+                    'vendors/**/*.js'
                 ]
             }
         }

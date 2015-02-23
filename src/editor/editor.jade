@@ -1,7 +1,15 @@
 //- Hidden image used by the Aviary SDK
-img#photo(src='img/default.png')
-//- When you click on the edit button in the menu, the front photo is cut in half et goes sideways to show the Aviary editor.
+img.source(src='img/default.png')
+.photo-wrap
+    .photo
+        .img
+//- When you click on the edit button in the menu, the front photo is cut in half et goes sideways to show the Aviary
+//- editor.
 //- This is the left one
-div#photo-left: img(src='img/default.png')
+.photo-wrap-left
+    .photo
+        .img
 //- This is the right one
-div#photo-right: img(src='img/default.png')
+.photo-wrap-right
+    .photo
+        .img

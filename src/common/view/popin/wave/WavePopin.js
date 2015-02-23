@@ -13,7 +13,7 @@ var WavePopin = Backbone.View.extend({
     className: 'wave-popin',
 
     events: {
-        'click .wave-popin-overlay': 'overlayClicked'
+        'click .overlay': 'overlayClicked'
     },
 
     defaults: {
@@ -43,7 +43,7 @@ var WavePopin = Backbone.View.extend({
         // Insert the content view provided inside the popin
         if (this.options.contentView) {
             // It is expected the contentView is already rendered by the caller
-            this.$('.wave-popin-content').html(this.options.contentView.el);
+            this.$('.content').html(this.options.contentView.el);
         }
 
         $body.append(this.$el);
@@ -59,7 +59,7 @@ var WavePopin = Backbone.View.extend({
             event.preventDefault();
             return;
         }
-        if (event.target.classList.contains('wave-popin-overlay')) {
+        if (event.target.classList.contains('overlay')) {
             this.hide();
         }
     },
@@ -98,7 +98,7 @@ var WavePopin = Backbone.View.extend({
 
     // Will animate the path of the background (wave effect).
     _animatePath: function (callback) {
-        var morphEl = this.$('.wave-popin-shape');
+        var morphEl = this.$('.shape');
         var ssvg = new Snap(morphEl.find('svg')[0]);
         var path = ssvg.select( 'path' );
         this._initialPath = path.attr('d');

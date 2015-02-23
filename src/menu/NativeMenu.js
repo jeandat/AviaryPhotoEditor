@@ -20,23 +20,65 @@ var NativeMenu = Base.extend({
 
         // Editor menu
         var editorSubMenu = new Menu();
-        editorSubMenu.append(new MenuItem({
+
+        function selectSize(size){
+            var selectedItem = _.find(sizeSubMenu.items, 'checked', true);
+            selectedItem && (selectedItem.checked = false);
+            editorView.sizeBehavior(size);
+        }
+
+        var sizeSubMenu = new Menu();
+        sizeSubMenu.append(new MenuItem({
             type: 'checkbox',
-            label: 'Contain photo',
-            checked: false,
+            label: 'Cover',
+            checked: true,
             click: function () {
-                editorView.toggleContainPhoto();
+                selectSize('cover');
             }
         }));
-        editorSubMenu.append(new MenuItem({
+        sizeSubMenu.append(new MenuItem({
             type: 'checkbox',
-            label: 'Real size',
+            label: 'Contain',
             checked: false,
-            enabled: false,
             click: function () {
-                console.warn('Not implemented yet');
+                selectSize('contain');
             }
         }));
+        //sizeSubMenu.append(new MenuItem({
+        //    type: 'checkbox',
+        //    label: 'Real size',
+        //    checked: false,
+        //    enabled: false,
+        //    click: function () {
+        //        selectSize('real');
+        //    }
+        //}));
+        editorSubMenu.append(new MenuItem({label: 'Size', submenu: sizeSubMenu}));
+
+        function selectTransition(transition){
+            var selectedItem = _.find(transitionSubMenu.items, 'checked', true);
+            selectedItem && (selectedItem.checked = false);
+            editorView.transitionBehavior(transition);
+        }
+
+        var transitionSubMenu = new Menu();
+        transitionSubMenu.append(new MenuItem({
+            type: 'checkbox',
+            label: 'Fade',
+            checked: true,
+            click: function () {
+                selectTransition('fade');
+            }
+        }));
+        transitionSubMenu.append(new MenuItem({
+            type: 'checkbox',
+            label: 'Luminance',
+            checked: false,
+            click: function () {
+                selectTransition('luminance');
+            }
+        }));
+        editorSubMenu.append(new MenuItem({label: 'Transition', submenu: transitionSubMenu}));
 
         // File menu
         var fileSubMenu = new Menu();
@@ -57,7 +99,6 @@ var NativeMenu = Base.extend({
         this.menubar.insert(new MenuItem({label: 'File', submenu: fileSubMenu}), 1);
         this.menubar.insert(new MenuItem({label: 'Editor', submenu: editorSubMenu}), 2);
     }
-
 
 }, {
     instance: function () {

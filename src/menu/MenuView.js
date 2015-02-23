@@ -15,11 +15,6 @@ var MenuView = Backbone.View.extend({
         'click #tutorial-button':'showTutorial',
 
         // TODO Move in menudev
-        'click #launch-button':function(){
-            editorView.setImage('img/paris.jpg');
-        },
-
-        // TODO Move in menudev
         'click #import-button':function(){
             // http://kandkadventures.com/wp-content/uploads/2013/06/Eiffel-Tower-Paris-France.jpg
             var dragNDropService = DragNDropService.instance();

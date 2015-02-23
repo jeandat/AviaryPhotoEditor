@@ -9,7 +9,7 @@ var ImportView = WavePopin.extend({
 
     initialize: function (options) {
 
-        _.bindAll(this, 'registerPhoto');
+        _.bindAll(this, 'registerPhoto', 'abort');
 
         options = options || {};
         // This view will be used as content: it contains a list of funds
@@ -49,21 +49,41 @@ var ImportView = WavePopin.extend({
     },
 
     import: function () {
-        var promise;
-        if(this.options.url){
-            promise = this.importUrl();
-        }
-        else if(this.options.file){
-            promise = this.importFile();
-        }
-        else {
+        var uri = this.options.url || this.options.file;
+
+        if(!uri){
             throw new Error(1, 'You can only import a url or a file');
         }
-        promise.fail(function (err) {
-            // TODO show error message in place of the progress bar
-            console.error('Import failed: %o', err);
-            // TODO Add a cross in the right corner ?
+
+        var self = this;
+        // Check that the given uri is an image before importing anything.
+        $('<img>').attr('src',uri).load(function(){
+            console.debug('OK, good, this is an image');
+            var promise = self.options.url ? self.importUrl() : self.importFile();
+            promise.fail(self.abort);
+            return promise;
+        }).error(function () {
+            var err = new Error(2, 'Hey, this doesn\'t seem to be an image');
+            self.abort(err);
+            // For consistency, this method will always return a promise.
+            var def = Q.defer();
+            def.reject(err);
+            return def.promise;
         });
+    },
+
+    abort: function (err) {
+        console.error('Import failed: %o', err);
+        this.$('.progress').addClass('failed');
+        var $message = this.$('.message');
+        if(err && err.code === 2){
+            $message.text(err.message);
+        }
+        else{
+            $message.text('Houston, we\'ve had a problem here. Import aborted.');
+        }
+        $message.removeClass('hidden');
+        // TODO Add a cross in the right corner with an svg animation (path containing 5 points)
     },
 
     registerPhoto: function (pathOnDisk) {

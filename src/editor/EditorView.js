@@ -6,21 +6,16 @@ var singleton;
 var EditorView = Backbone.View.extend({
 
     id:'editor',
-
-    initialize: function () {
-        _.bindAll(this, 'onLoad', 'onError', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
-        this.listenTo(Backbone, 'import', this.photoDidImported);
+    attributes:{
+        'data-transition':'luminance',
+        'data-size':'cover'
     },
 
-    render: function () {
+    initialize: function () {
 
-        // Render the template
-        this.$el.html(template);
-
-        // Keep a reference on the image DOM element
-        this.$photo = this.$('#photo');
-        this.$photoLeft = this.$('#photo-left img');
-        this.$photoRight = this.$('#photo-right img');
+        _.bindAll(this, 'onLoad', 'onError', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
+        this.listenTo(Backbone, 'import', this.photoDidImported);
+        this.editorClosed = true;
 
         // Create the Aviary Editor
         if(!this.editor){
@@ -38,8 +33,24 @@ var EditorView = Backbone.View.extend({
                 onClose:this.onClose
             });
         }
+    },
+
+    render: function () {
+
+        // Render the template
+        this.$el.html(template);
+
+        // Keep a reference on the image DOM element
+        this.$source = this.$('.source');
+        this.$photos = this.$('.img');
+        this.$wrap = this.$('.photo-wrap');
+        this.$wrapsLeftRight = this.$('[class^=photo-wrap-]');
 
         return this;
+    },
+
+    photoDidImported: function (view, model) {
+        return this.setImage(model.get('uri')).done();
     },
 
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
@@ -47,28 +58,26 @@ var EditorView = Backbone.View.extend({
         var self = this;
         return this.closePanes().then(function () {
             self.shutdownEditor();
-            self.$photo.attr('src', url);
-            self.$photoLeft.attr('src', url);
-            self.$photoRight.attr('src', url);
-            // Returns a new promise
-            return self.launchEditor();
+            var def = Q.defer();
+            self.$el.one('csstransitionend', function () {
+                self.$source.attr('src', url);
+                self.$photos.css('backgroundImage', 'url(\'' + url + '\')');
+                self.launchEditor().then(def.resolve).fail(def.reject).finally(function () {
+                    self.$el.removeClass('change');
+                });
+            });
+            self.$el.addClass('change');
+            return def.promise;
         });
-    },
-
-    photoDidImported: function (view, model) {
-        this.setImage(model.get('uri'));
     },
 
     // Make available the aviary editor (from loaded to ready state).
     launchEditor: function () {
-        var img = this.$photo[0];
+        var img = this.$source[0];
         var def = Q.defer();
         var self = this;
 
-        if(!this.editorClosed){
-            def.reject('Editor already launched');
-        }
-        else{
+        if(this.editorClosed){
             this.editor.launch({
                 image:img,
                 url:img.src,
@@ -85,6 +94,9 @@ var EditorView = Backbone.View.extend({
                 }
             });
         }
+        else{
+            def.resolve();
+        }
 
         return def.promise;
     },
@@ -98,18 +110,18 @@ var EditorView = Backbone.View.extend({
 
     // Show/Hide the Aviary editor.
     togglePanes: function () {
-        return this.$el.hasClass('open') ? this.closePanes(false) : this.openPanes();
+        return this.$wrap.hasClass('open') ? this.closePanes() : this.openPanes();
     },
 
     openPanes: function () {
         var def = Q.defer();
-        var $el = this.$el;
-        if($el.hasClass('open')){
+        if(this.$wrap.hasClass('open')){
             def.resolve();
         }
         else {
-            $el.one('csstransitionend', def.resolve);
-            $el.addClass('open');
+            this.$wrap.addClass('open');
+            this.$el.one('csstransitionend', def.resolve);
+            this.$wrapsLeftRight.addClass('open');
         }
         return def.promise;
     },
@@ -117,13 +129,16 @@ var EditorView = Backbone.View.extend({
     // Close and hide the Aviary editor.
     closePanes: function () {
         var def = Q.defer();
-        var $el = this.$el;
-        if(!$el.hasClass('open')){
+        var self = this;
+        if(!this.$wrap.hasClass('open')){
             def.resolve();
         }
         else {
-            $el.one('csstransitionend', def.resolve);
-            $el.removeClass('open');
+            this.$el.one('csstransitionend', function () {
+                self.$wrap.removeClass('open');
+                def.resolve();
+            });
+            this.$wrapsLeftRight.removeClass('open');
         }
         return def.promise;
     },
@@ -157,22 +172,17 @@ var EditorView = Backbone.View.extend({
         var self = this;
         fileService.importUrl(newUrl).then(function (path) {
             self.setImage(encodeURI(path));
-            // self.forceRedraw();
             self.toggle();
         }).done();
     },
 
-    // Force a redraw of each image
-    forceRedraw: function () {
-        /* jshint expr: true */
-        this.$photo[0].offsetHeight;
-        this.$photoLeft[0].offsetHeight;
-        this.$photoRight[0].offsetHeight;
+    // Maintain photo in window
+    sizeBehavior: function (behavior) {
+        this.$el.attr('data-size', behavior);
     },
 
-    // Maintain photo in window
-    toggleContainPhoto: function () {
-        this.$el.toggleClass('contain');
+    transitionBehavior: function (transition) {
+        this.$el.attr('data-transition', transition);
     }
 
 }, {

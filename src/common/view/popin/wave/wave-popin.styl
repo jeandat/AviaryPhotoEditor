@@ -8,15 +8,15 @@
 
 
     &.shown
-        .wave-popin-overlay
+        .overlay
             opacity 1
-        .wave-popin-content-wrapper,
-        .wave-popin-shape
+        .content-wrapper,
+        .shape
             transform translate3d(0,0,0)
 
 
 
-    &-content-wrapper
+    .content-wrapper
         position fixed
         bottom 0
         left 0
@@ -27,23 +27,23 @@
         transition-property transform
 
 
-    &-shape
+    .shape
         position absolute
         width 100%
         width calc(100% + 400px)
         height 100%
         top 0
         left 0
-        fill #373a47
+        fill rgba(#373a47,.8)
         transform translate3d(-400px,0,0)
         transition-property transform
         z-index 103
 
-    &-content
+    .content
         position relative
         z-index 104
 
-    &-overlay
+    .overlay
         opacity 0
         background-color rgba(black, .2)
         transition-property opacity

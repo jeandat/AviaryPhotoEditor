@@ -1,9 +1,11 @@
 .import-view
 
-    &.shown .wave-popin-content .uri
+    z-index 200
+
+    &.shown .content .uri
         opacity 1
 
-    .wave-popin-content
+    .content
         text-align center
         color #eee
 
@@ -28,21 +30,45 @@
                 font-family 'Poiret One'
                 margin-left 16px
 
-        progress
-            -webkit-appearance none
+        .progress
+            overflow hidden
             width 80%
             margin-top 30px
-            height 15px
+            height 20px
+            position relative
+            margin 30px auto
 
-            &::-webkit-progress-bar
-                background none
-                border 2px solid #fff
-                border-radius 10px
+            .message,progress
+                transition-property opacity, transform
+                position absolute
+                top 0
+                left 0
+                width 100%
+                height 100%
 
-            &::-webkit-progress-value
-                border-radius 10px
-                background-color #fff
-                transition width 400ms
+            &.failed
+                .message
+                    opacity 1
+                    transform scale(1)
+                progress
+                    opacity 0
+                    transform scale(1.1)
 
+            .message
+                color #FF2D55
+                opacity 0
+                transform scale(.9)
 
+            progress
+                -webkit-appearance none
+
+                &::-webkit-progress-bar
+                    background none
+                    border 2px solid #fff
+                    border-radius 10px
+
+                &::-webkit-progress-value
+                    border-radius 10px
+                    background-color #fff
+                    transition width 400ms
 

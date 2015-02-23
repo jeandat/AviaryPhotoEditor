@@ -1,5 +1,7 @@
 div.uri
     div.label Importing from:
-    div.path.ellipsis #{url||file}
+    div.path.ellipsis #{decodeURIComponent(url||file)}
 
-progress(max='100')
+div.progress
+    progress(max='100')
+    div.message
