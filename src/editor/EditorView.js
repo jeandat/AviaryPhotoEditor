@@ -7,7 +7,7 @@ var EditorView = Backbone.View.extend({
 
     id:'editor',
     attributes:{
-        'data-transition':'luminance',
+        'data-transition':'fade',
         'data-size':'cover'
     },
 

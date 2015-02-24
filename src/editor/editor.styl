@@ -48,11 +48,14 @@
             opacity 0
 
 
-    // Transition configuration
+    // Transition definitions
     &[data-transition='luminance'] .photo-wrap .img
         transition -webkit-filter 1.5s, opacity 1.5s
     &[data-transition='fade'] .photo-wrap .img
         transition opacity 1.5s
+    .photo-wrap
+        &-left,&-right
+            transition transform 1.5s
 
 
     // Size configuration
@@ -96,7 +99,6 @@
             opacity 0
             z-index 100
             width 50%
-            transition transform 1.5s
             .photo
                 width 200%
                 height 100%

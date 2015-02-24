@@ -9,11 +9,13 @@ var MenuItem = gui.MenuItem;
 
 var singleton;
 
+
 // Create a native Mac OS X menu
 var NativeMenu = Base.extend({
 
-    // Transform the default menubar in a native Mac OS X menubar.
+    // Create a native menu's content.
     create: function () {
+
         this.menubar = new Menu({type:'menubar'});
         this.menubar.createMacBuiltin('Aviary Photo Editor',{hideEdit: !DEV});
         gui.Window.get().menu = this.menubar;
@@ -21,64 +23,47 @@ var NativeMenu = Base.extend({
         // Editor menu
         var editorSubMenu = new Menu();
 
-        function selectSize(size){
-            var selectedItem = _.find(sizeSubMenu.items, 'checked', true);
-            selectedItem && (selectedItem.checked = false);
-            editorView.sizeBehavior(size);
-        }
-
+        // Size sub menu
         var sizeSubMenu = new Menu();
-        sizeSubMenu.append(new MenuItem({
+        append(sizeSubMenu, new MenuItem({
             type: 'checkbox',
             label: 'Cover',
             checked: true,
             click: function () {
-                selectSize('cover');
+                editorView.sizeBehavior('cover');
             }
         }));
-        sizeSubMenu.append(new MenuItem({
+        append(sizeSubMenu, new MenuItem({
             type: 'checkbox',
             label: 'Contain',
             checked: false,
             click: function () {
-                selectSize('contain');
+                editorView.sizeBehavior('contain');
             }
         }));
-        //sizeSubMenu.append(new MenuItem({
-        //    type: 'checkbox',
-        //    label: 'Real size',
-        //    checked: false,
-        //    enabled: false,
-        //    click: function () {
-        //        selectSize('real');
-        //    }
-        //}));
         editorSubMenu.append(new MenuItem({label: 'Size', submenu: sizeSubMenu}));
 
-        function selectTransition(transition){
-            var selectedItem = _.find(transitionSubMenu.items, 'checked', true);
-            selectedItem && (selectedItem.checked = false);
-            editorView.transitionBehavior(transition);
-        }
 
+        // Transition sub menu
         var transitionSubMenu = new Menu();
-        transitionSubMenu.append(new MenuItem({
+        append(transitionSubMenu, new MenuItem({
             type: 'checkbox',
             label: 'Fade',
             checked: true,
             click: function () {
-                selectTransition('fade');
+                editorView.transitionBehavior('fade');
             }
         }));
-        transitionSubMenu.append(new MenuItem({
+        append(transitionSubMenu, new MenuItem({
             type: 'checkbox',
             label: 'Luminance',
             checked: false,
             click: function () {
-                selectTransition('luminance');
+                editorView.transitionBehavior('luminance');
             }
         }));
         editorSubMenu.append(new MenuItem({label: 'Transition', submenu: transitionSubMenu}));
+
 
         // File menu
         var fileSubMenu = new Menu();
@@ -95,6 +80,7 @@ var NativeMenu = Base.extend({
             }
         }));
 
+
         // Add menus in the menubar
         this.menubar.insert(new MenuItem({label: 'File', submenu: fileSubMenu}), 1);
         this.menubar.insert(new MenuItem({label: 'Editor', submenu: editorSubMenu}), 2);
@@ -108,5 +94,47 @@ var NativeMenu = Base.extend({
         return singleton;
     }
 });
+
+// Make sure when appending items to a menu that there is max one checked element.
+// The idea is to simulate the behavior of a radio button with menu items, a sort of radio menu.
+function append(menu, item){
+    if(item.checked && menu.selectedItem == null){
+        menu.selectedItem = item;
+    }
+    else if(item.checked && menu.selectedItem.id !== item.id){
+        menu.selectedItem.checked = false;
+        menu.selectedItem = item;
+    }
+    var clickFn = item.click;
+    item.click = function(){
+        itemDidClicked(menu, item, clickFn);
+    };
+    menu.append(item);
+}
+
+function itemDidClicked(menu, item, clickFn){
+    // If there was no preselected item during the appending phase, just make the clicked one selected.
+    if(menu.selectedItem == null){
+        menu.selectedItem = item;
+        clickFn();
+        return;
+    }
+
+    // If the clicked item is already selected, noop, it is not possible to unselect an item.
+    if(menu.selectedItem.id === item.id){
+        console.debug('Can\'t unselect a radio menu item');
+        // Restore the previous state as nw will change the checked state.
+        menu.selectedItem.checked = true;
+        return;
+    }
+
+    // If an unselected item is clicked, make it selected.
+    if(menu.selectedItem.id !== item.id){
+        console.debug('Menu item \'%s\' selected', item.label);
+        menu.selectedItem.checked = false;
+        menu.selectedItem = item;
+        clickFn();
+    }
+}
 
 module.exports = NativeMenu;
