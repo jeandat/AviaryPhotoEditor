@@ -6,6 +6,7 @@ var singleton;
 var EditorView = Backbone.View.extend({
 
     id:'editor',
+    className:'hide-editor',
     attributes:{
         'data-transition':'fade',
         'data-size':'cover'
@@ -36,16 +37,11 @@ var EditorView = Backbone.View.extend({
     },
 
     render: function () {
-
         // Render the template
         this.$el.html(template);
-
         // Keep a reference on the image DOM element
         this.$source = this.$('.source');
         this.$photos = this.$('.img');
-        this.$wrap = this.$('.photo-wrap');
-        this.$wrapsLeftRight = this.$('[class^=photo-wrap-]');
-
         return this;
     },
 
@@ -59,14 +55,28 @@ var EditorView = Backbone.View.extend({
         return this.closePanes().then(function () {
             self.shutdownEditor();
             var def = Q.defer();
+
+            self.$el.addClass('hide-editor').removeClass('hide-photo');
+
+            // TODO, Fuck, this is a job for GSAP ! Rewrite.
             self.$el.one('csstransitionend', function () {
                 self.$source.attr('src', url);
                 self.$photos.css('backgroundImage', 'url(\'' + url + '\')');
-                self.launchEditor().then(def.resolve).fail(def.reject).finally(function () {
-                    self.$el.removeClass('change');
+
+                var launchPromise = self.launchEditor().finally(function () {
+
+                    self.$el.one('csstransitionend', function () {
+                        launchPromise.isFulfilled() ? def.resolve() : def.reject(new Error(3, 'Editor failed ' +
+                        'to launch.'));
+                        // TODO show an import error message if the promise is not resolved
+                    });
+
+                    self.$el.removeClass('show-photo');
                 });
             });
-            self.$el.addClass('change');
+
+            self.$el.addClass('show-photo');
+
             return def.promise;
         });
     },
@@ -110,18 +120,19 @@ var EditorView = Backbone.View.extend({
 
     // Show/Hide the Aviary editor.
     togglePanes: function () {
-        return this.$wrap.hasClass('open') ? this.closePanes() : this.openPanes();
+        return this.$el.hasClass('show-editor') ? this.closePanes() : this.openPanes();
     },
 
     openPanes: function () {
         var def = Q.defer();
-        if(this.$wrap.hasClass('open')){
+        var $el = this.$el;
+        if($el.hasClass('show-editor')){
             def.resolve();
         }
         else {
-            this.$wrap.addClass('open');
-            this.$el.one('csstransitionend', def.resolve);
-            this.$wrapsLeftRight.addClass('open');
+            $el.removeClass('hide-editor').addClass('hide-photo');
+            $el.one('csstransitionend', def.resolve);
+            $el.addClass('show-editor');
         }
         return def.promise;
     },
@@ -129,16 +140,15 @@ var EditorView = Backbone.View.extend({
     // Close and hide the Aviary editor.
     closePanes: function () {
         var def = Q.defer();
-        var self = this;
-        if(!this.$wrap.hasClass('open')){
+        var $el = this.$el;
+        if(!$el.hasClass('show-editor')){
             def.resolve();
         }
         else {
-            this.$el.one('csstransitionend', function () {
-                self.$wrap.removeClass('open');
+            $el.one('csstransitionend', function () {
                 def.resolve();
             });
-            this.$wrapsLeftRight.removeClass('open');
+            $el.removeClass('show-editor');
         }
         return def.promise;
     },

@@ -14,48 +14,61 @@
         width 100%
         height 100%
         z-index 50
-        opacity 0
+        opacity 0.8
         -webkit-filter grayscale(100%)
         transform translateZ(0)
 
         transition-property opacity, -webkit-filter
         transition-duration 1s
-        transition-delay 500ms
+        transition-delay 0ms
 
 
-    // The open class is applied to each wrapper because the one on .photo-wrap is not added or remove
-    // simultaneously with .photo-wrap-left and .photo-wrap-right
-    .photo-wrap
-        &.open
-            opacity 0
-            & ~ #avpw_holder
-                opacity .8
-                -webkit-filter grayscale(0)
-        &-left.open
-            opacity 1
+    // This class is applied when opening the panes of the editor in order to reveal the aviary editor.
+    // It works in combination with .hide-photo.
+    &.show-editor .editor-pane
+        &-left
             transform translateX(-100%)
-        &-right.open
-            opacity 1
+        &-right
             transform translateX(100%)
+            & ~ #avpw_holder
+                opacity 1
+                -webkit-filter grayscale(0)
+                transition-delay 500ms
+
+    // This class is applied when opening the panes of the editor in order to reveal the aviary editor.
+    // It hides the forefront photo.
+    &.hide-photo
+        .photo-wrap
+            opacity 0
+            transition none
 
 
-    // The change class is applied when transitioning from one image to another (after an import).
-    &.change
-        &[data-transition='luminance'] .photo-wrap .img
+
+    // This class is applied when changing the forefront photo after an import.
+    // It hides everything related to the editor (panes + aviary editor).
+    // It works in combination with .show-photo.
+    &.hide-editor
+        .editor-pane-left,
+        .editor-pane-right,
+        #avpw_holder
+            transition none
+            opacity 0
+
+    // Transition luminance used to change the photo after an import
+    &[data-transition='luminance']
+        .photo-wrap .img
+            transition -webkit-filter 1.5s, opacity 1.5s
+        &.show-photo .photo-wrap .img
             opacity 0
             -webkit-filter blur(150px) brightness(4)
-        &[data-transition='fade'] .photo-wrap .img
+
+    // Transition fade used to change the photo after an import
+    &[data-transition='fade']
+        .photo-wrap .img
+            transition opacity 1.5s
+        &.show-photo .photo-wrap .img
             opacity 0
 
-
-    // Transition definitions
-    &[data-transition='luminance'] .photo-wrap .img
-        transition -webkit-filter 1.5s, opacity 1.5s
-    &[data-transition='fade'] .photo-wrap .img
-        transition opacity 1.5s
-    .photo-wrap
-        &-left,&-right
-            transition transform 1.5s
 
 
     // Size configuration
@@ -65,40 +78,40 @@
         background-size cover
 
 
-    .photo-wrap
 
-        &,
-        &-left,
-        &-right
-            position fixed
+    .photo-wrap,
+    .editor-pane-left,
+    .editor-pane-right
+        position fixed
+        width 100%
+        height 100%
+        top 0
+        bottom 0
+        left 0
+        overflow hidden
+        transform translateZ(0)
+        .img
             width 100%
             height 100%
-            top 0
-            bottom 0
-            left 0
-            overflow hidden
-            transform translateZ(0)
-            .img
-                width 100%
-                height 100%
-                background-repeat no-repeat
-                background-position top center
-                background-color $bg
-                background-image url('img/default.png')
+            background-repeat no-repeat
+            background-position top center
+            background-color $bg
+            background-image url('img/default.png')
 
-        &
-            pointer-events none
-            z-index 101
-            right 0
-            .photo
-                width 100%
-                height 100%
+    .photo-wrap
+        pointer-events none
+        z-index 101
+        right 0
+        .photo
+            width 100%
+            height 100%
 
+    .editor-pane
         &-left,
         &-right
-            opacity 0
             z-index 100
             width 50%
+            transition transform 1.5s
             .photo
                 width 200%
                 height 100%
