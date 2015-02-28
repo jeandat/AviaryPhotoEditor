@@ -36,7 +36,7 @@
                 transition-delay 500ms
 
     // This class is applied when opening the panes of the editor in order to reveal the aviary editor.
-    // It hides the forefront photo.
+    // It hides the forefront photo. It works in combination with .show-editor.
     &.hide-photo
         .photo-wrap
             visibility hidden
@@ -54,15 +54,17 @@
             transition none
             visibility hidden
 
-    // Transition luminance used to change the photo after an import
+    // The .show-photo class is applied when changing the forefront photo after an import.
+    // It hides the photo temporarily until the image source is changed and then show the new one.
+    // It works in combination with .hide-editor.
+    // Here is what happens if the 'luminance' transition is active.
     &[data-transition='luminance']
         .photo-wrap .img
             transition -webkit-filter 1.5s, opacity 1.5s
         &.show-photo .photo-wrap .img
             opacity 0
             -webkit-filter blur(150px) brightness(4)
-
-    // Transition fade used to change the photo after an import
+    // Here is what happens if the 'fade' transition is active.
     &[data-transition='fade']
         .photo-wrap .img
             transition opacity 1.5s
@@ -71,7 +73,8 @@
 
 
 
-    // Size configuration
+    // Depending on the size option choosed in the editor menu,
+    // the image will adapt differently to the available space.
     &[data-size='contain'] .img
         background-size contain
     &[data-size='cover'] .img
