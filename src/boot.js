@@ -49,6 +49,8 @@ module.exports = function(){
     // Show the app after everything is ready
     // The last .done() instruction is a failsafe in case there was no fail block in the chain. If a rejected promise is not caught,
     // or a then block return an error, it will throw an error in the next event loop assuring at least there is an error in the console.
-    photoCollection.fetch().then(function () {gui.Window.get().show();}).done();
+    photoCollection.fetch().then(function () {
+        gui.Window.get().show();
+    }).done();
 
 };
