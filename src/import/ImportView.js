@@ -1,4 +1,5 @@
 var template = JST['import/import'];
+var errPrefix = 'Houston, we\'ve had a problem here. ';
 
 var ImportView = WavePopin.extend({
 
@@ -50,7 +51,7 @@ var ImportView = WavePopin.extend({
         var uri = this.options.url || this.options.file;
 
         if(!uri){
-            throw new Error(1, 'You can only import a url or a file');
+            throw new CustomError(2, 'You can only import a url or a file');
         }
 
         var self = this;
@@ -61,7 +62,7 @@ var ImportView = WavePopin.extend({
             promise.fail(self.abort);
             return promise;
         }).error(function () {
-            var err = new Error(2, 'Hey, this doesn\'t seem to be an image');
+            var err = new CustomError(3, 'This doesn\'t seem to be an image.');
             self.abort(err);
             // For consistency, this method will always return a promise.
             var def = Q.defer();
@@ -74,11 +75,11 @@ var ImportView = WavePopin.extend({
         console.error('Import failed: %o', err);
         this.$('.progress').addClass('failed');
         var $message = this.$('.message');
-        if(err && err.code === 2){
-            $message.text(err.message);
+        if(err && err.code === 3){
+            $message.text(errPrefix + err.message);
         }
         else{
-            $message.text('Houston, we\'ve had a problem here. Import aborted.');
+            $message.text(errPrefix + 'Import aborted.');
         }
         $message.removeClass('hidden');
         // TODO Add a cross in the right corner with an svg animation (path containing 5 points)

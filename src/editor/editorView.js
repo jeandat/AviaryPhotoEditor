@@ -65,8 +65,8 @@ var EditorView = Backbone.View.extend({
             var launchPromise = self.launchEditor().finally(function () {
 
                 self.$el.one('csstransitionend', function () {
-                    launchPromise.isFulfilled() ? def.resolve() : def.reject(new Error(3, 'Editor failed ' +
-                    'to launch.'));
+                    launchPromise.isFulfilled() ? def.resolve() : def.reject(new CustomError(1, 'Editor failed to ' +
+                    'launch.'));
                     // TODO show an import error message if the promise is not resolved
                 });
 
