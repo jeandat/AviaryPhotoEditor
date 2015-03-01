@@ -46,39 +46,39 @@ var EditorView = Backbone.View.extend({
     },
 
     photoDidImported: function (view, model) {
-        return this.setImage(model.get('uri')).done();
+        var self = this;
+        return this.closePanes().then(function () {
+            return self.setImage(model.get('uri'));
+        }).done();
     },
 
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
     setImage: function (url) {
+        this.shutdownEditor();
+        var def = Q.defer();
+
+        this.$el.addClass('hide-editor').removeClass('hide-photo');
+
         var self = this;
-        return this.closePanes().then(function () {
-            self.shutdownEditor();
-            var def = Q.defer();
+        this.$el.one('csstransitionend', function () {
+            self.$source.attr('src', url);
+            self.$photos.css('backgroundImage', 'url(\'' + url + '\')');
 
-            self.$el.addClass('hide-editor').removeClass('hide-photo');
+            var launchPromise = self.launchEditor().finally(function () {
 
-            // TODO, Fuck, this is a job for GSAP ! Rewrite.
-            self.$el.one('csstransitionend', function () {
-                self.$source.attr('src', url);
-                self.$photos.css('backgroundImage', 'url(\'' + url + '\')');
-
-                var launchPromise = self.launchEditor().finally(function () {
-
-                    self.$el.one('csstransitionend', function () {
-                        launchPromise.isFulfilled() ? def.resolve() : def.reject(new Error(3, 'Editor failed ' +
-                        'to launch.'));
-                        // TODO show an import error message if the promise is not resolved
-                    });
-
-                    self.$el.removeClass('show-photo');
+                self.$el.one('csstransitionend', function () {
+                    launchPromise.isFulfilled() ? def.resolve() : def.reject(new Error(3, 'Editor failed ' +
+                    'to launch.'));
+                    // TODO show an import error message if the promise is not resolved
                 });
+
+                self.$el.removeClass('show-photo');
             });
-
-            self.$el.addClass('show-photo');
-
-            return def.promise;
         });
+
+        this.$el.addClass('show-photo');
+
+        return def.promise;
     },
 
     // Make available the aviary editor (from loaded to ready state).
@@ -131,7 +131,8 @@ var EditorView = Backbone.View.extend({
         }
         else {
             $el.removeClass('hide-editor').addClass('hide-photo');
-            $el.one('csstransitionend', def.resolve);
+            // The animation is done when the two panes are opened.
+            $el.one('csstransitionend:transform', def.resolve);
             $el.addClass('show-editor');
         }
         return def.promise;
@@ -145,7 +146,8 @@ var EditorView = Backbone.View.extend({
             def.resolve();
         }
         else {
-            $el.one('csstransitionend', function () {
+            // The animation is done when the two panes are closed.
+            $el.one('csstransitionend:transform', function () {
                 def.resolve();
             });
             $el.removeClass('show-editor');
