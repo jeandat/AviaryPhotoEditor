@@ -13,7 +13,8 @@ var WavePopin = Backbone.View.extend({
     className: 'wave-popin',
 
     events: {
-        'click .overlay': 'overlayClicked'
+        'click .overlay': 'willClose',
+        'click .icon-close': 'willClose'
     },
 
     defaults: {
@@ -54,13 +55,12 @@ var WavePopin = Backbone.View.extend({
     // Close the popin if we clicked the wrapper or one of its children if closeOnClick option is enabled.
     // The wrapper is an ugly hack to make the popin work well when the page is shrinked after opening the native
     // keyboard.
-    overlayClicked: function (event) {
-        if (!this.options.closable) {
-            event.preventDefault();
-            return;
-        }
-        if (event.target.classList.contains('overlay')) {
-            this.hide();
+    willClose: function (event) {
+        var classList = event.target.classList;
+        if (classList.contains('overlay') || classList.contains('icon-close')) {
+            if (this.options.closable) {
+                this.hide();
+            }
         }
     },
 
@@ -145,6 +145,13 @@ var WavePopin = Backbone.View.extend({
             this.options.contentView.remove();
         }
         Backbone.View.prototype.remove.apply(this, arguments);
+    },
+
+    // If true, show the close button.
+    setClosable: function (value) {
+        var closeIcon = this.$('.icon-close');
+        this.options.closable = value;
+        value ? closeIcon.removeClass('hidden') : closeIcon.addClass('hidden');
     }
 });
 

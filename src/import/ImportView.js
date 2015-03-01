@@ -82,6 +82,7 @@ var ImportView = WavePopin.extend({
             $message.text(errPrefix + 'Import aborted.');
         }
         $message.removeClass('hidden');
+        this.setClosable(true);
         // TODO Add a cross in the right corner with an svg animation (path containing 5 points)
     },
 
