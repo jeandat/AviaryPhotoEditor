@@ -1,4 +1,4 @@
-var nativeOnDragOver, nativeOnDrop, singleton, currentView;
+var nativeOnDragOver, nativeOnDrop, singleton, importService;
 
 // Service that defines what happens when dragging a file over the window.
 var DragNDropService = Base.extend({
@@ -7,6 +7,7 @@ var DragNDropService = Base.extend({
 
     // Constructor
     initialize: function () {
+        importService = ImportService.instance();
         _.bindAll(this, 'onDrop', 'onDragOver');
     },
 
@@ -38,36 +39,13 @@ var DragNDropService = Base.extend({
 
         // Process urls
         if(_.contains(event.dataTransfer.types, this.URI_TYPE)){
-            this.processUrl(event.dataTransfer.getData(this.URI_TYPE));
+            importService.processUrl(event.dataTransfer.getData(this.URI_TYPE));
         }
 
         // Treating only the first file if there is several
         var files = event.dataTransfer.files;
         if(files && files.length){
-            this.processFile(files[0].path);
-        }
-    },
-
-    processUrl: function (url) {
-        console.info('Importing url: %s', url);
-        this._process({url:url});
-    },
-
-    processFile: function (file) {
-        console.info('Importing file: ', file);
-        this._process({file:file});
-    },
-
-    _process: function (options) {
-        if(currentView){
-            currentView.hide().then(function () {
-                currentView.remove();
-                currentView = null;
-                createViewFn(options);
-            });
-        }
-        else{
-            createViewFn(options);
+            importService.processFile(files[0].path);
         }
     },
 
@@ -83,13 +61,5 @@ var DragNDropService = Base.extend({
         return singleton;
     }
 });
-
-function createViewFn(options) {
-    currentView = new ImportView(options);
-    $body.append(currentView.render().el);
-    currentView.show().done(function () {
-        currentView.import();
-    });
-}
 
 module.exports = DragNDropService;
