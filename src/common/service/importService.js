@@ -1,7 +1,13 @@
 var currentView;
+var $chooser = $('#open-dialog');
 
 // Service that defines what happens when dragging a file over the window.
 var ImportService = Base.extend({
+
+    initialize: function () {
+        Base.prototype.initialize.apply(this, arguments);
+        _.bindAll(this, 'didChooseAFile');
+    },
 
     processUrl: function (url) {
         console.info('Importing url: %s', url);
@@ -24,6 +30,24 @@ var ImportService = Base.extend({
         else{
             createViewFn(options);
         }
+    },
+
+    // Open a native dialog that allows selecting a file or a photo from iPhoto.
+    showOpenDialog: function () {
+        $chooser.change(this.didChooseAFile);
+        $chooser.trigger('click');
+    },
+
+    // Callback that process the file selected in `#showOpenDialog`.
+    didChooseAFile: function () {
+        var path = $chooser.val();
+        if(path){
+            // Forced to wait the native dialog is hidden. Too bad.
+            _.delay(this.processFile.bind(this), 500, path);
+            // Reset the selected value to empty ('') to avoid losing events
+            // if the value doesn't change between two dialogs.
+            $chooser.val('');
+        }
     }
 
 });
@@ -31,7 +55,7 @@ var ImportService = Base.extend({
 function createViewFn(options) {
     currentView = new ImportView(options);
     $body.append(currentView.render().el);
-    currentView.show().done(function () {
+    currentView.show().then(function () {
         currentView.import();
     });
 }

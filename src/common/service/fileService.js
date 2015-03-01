@@ -67,7 +67,7 @@ var FileService = Base.extend({
     // `id` is used as a name on disk.
     importFile: function (fileUri, id) {
 
-        console.info('Initiating download of %s', fileUri);
+        console.info('Initiating copy of %s', fileUri);
 
         // TODO create historic folder if non existing
         var savePath = HISTORIC + id;

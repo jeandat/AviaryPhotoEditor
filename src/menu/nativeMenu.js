@@ -66,7 +66,7 @@ var NativeMenu = Base.extend({
         fileSubMenu.append(new MenuItem({
             label: 'Import...',
             click: function () {
-                console.debug('Not implemented yet !');
+                importService.showOpenDialog();
             }
         }));
         fileSubMenu.append(new MenuItem({

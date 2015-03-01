@@ -4,6 +4,10 @@ html
         title Aviary Photo Editor
         link(rel='stylesheet', type='text/css', href='app.css')
     body
+
+        //- This is an hidden input file that will allow opening the native open dialog.
+        input#open-dialog.hidden(type='file')
+
         //- Injected list of vendor file to avoid adding a library manually and have the right order of injection
         //- written several times accross the project
         each js in vendors
