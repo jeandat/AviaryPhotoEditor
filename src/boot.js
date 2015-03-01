@@ -7,14 +7,6 @@ module.exports = function(){
     window.Q = require('Q');
 
 
-    // Dependencies
-    var editorView = EditorView.instance();
-    var menuView = MenuView.instance();
-    var nativeMenu = NativeMenu.instance();
-    var dragNDropService = DragNDropService.instance();
-    var photoCollection = PhotoCollection.instance();
-    var gui = require('nw.gui');
-
 
     // Load the Nunito font.
     // For simplicity sake and to test a new workaround that prevent the FOIT effect, I choosed to use a web technique
@@ -50,6 +42,7 @@ module.exports = function(){
     // The last .done() instruction is a failsafe in case there was no fail block in the chain. If a rejected promise is not caught,
     // or a then block return an error, it will throw an error in the next event loop assuring at least there is an error in the console.
     photoCollection.fetch().then(function () {
+        var gui = require('nw.gui');
         gui.Window.get().show();
     }).done();
 

@@ -2,7 +2,6 @@ var fs = require('fs');
 var request = require('request');
 var progress = require('progress-stream');
 var mkdirp = require('mkdirp');
-var singleton;
 
 
 
@@ -155,14 +154,6 @@ var FileService = Base.extend({
         });
     }
 
-}, {
-
-    instance: function () {
-        if (!singleton) {
-            singleton = new FileService();
-        }
-        return singleton;
-    }
 });
 
 // Notify listeners with a state object with the following structure:
@@ -212,4 +203,4 @@ function removePhotoOnErr(savePath){
     });
 }
 
-module.exports = FileService;
+module.exports = new FileService();

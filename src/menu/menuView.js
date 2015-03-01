@@ -1,6 +1,4 @@
 var template = JST['menu/menu']();
-var singleton;
-var editorView = EditorView.instance();
 
 // This view is a singleton
 var MenuView = Backbone.View.extend({
@@ -13,7 +11,7 @@ var MenuView = Backbone.View.extend({
         'click #edit-button':'editPhoto',
         'click #tutorial-button':'showTutorial',
         'click #import-button':function(){
-            ImportService.instance().processFile('/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg');
+            importService.processFile('/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg');
         }
     },
 
@@ -40,13 +38,6 @@ var MenuView = Backbone.View.extend({
         // TODO
     }
 
-}, {
-    instance: function () {
-        if (!singleton) {
-            singleton = new MenuView();
-        }
-        return singleton;
-    }
 });
 
-module.exports=MenuView;
+module.exports= new MenuView();

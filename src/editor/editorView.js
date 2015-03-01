@@ -1,6 +1,4 @@
 var template = JST['editor/editor']();
-var fileService = FileService.instance();
-var singleton;
 
 // This view is a singleton.
 var EditorView = Backbone.View.extend({
@@ -197,13 +195,6 @@ var EditorView = Backbone.View.extend({
         this.$el.attr('data-transition', transition);
     }
 
-}, {
-    instance: function () {
-        if (!singleton) {
-            singleton = new EditorView();
-        }
-        return singleton;
-    }
 });
 
-module.exports = EditorView;
+module.exports = new EditorView();

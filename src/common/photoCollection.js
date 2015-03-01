@@ -1,5 +1,3 @@
-var singleton;
-var fileService = FileService.instance();
 
 var PhotoCollection = Backbone.Collection.extend({
 
@@ -55,13 +53,6 @@ var PhotoCollection = Backbone.Collection.extend({
         _.isArray(model) ? _.forEach(model, model.destroy) : model.destroy();
     }
 
-}, {
-    instance: function () {
-        if (!singleton) {
-            singleton = new PhotoCollection();
-        }
-        return singleton;
-    }
 });
 
-module.exports = PhotoCollection;
+module.exports = new PhotoCollection();

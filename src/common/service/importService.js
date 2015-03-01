@@ -1,4 +1,4 @@
-var singleton, currentView;
+var currentView;
 
 // Service that defines what happens when dragging a file over the window.
 var ImportService = Base.extend({
@@ -26,13 +26,6 @@ var ImportService = Base.extend({
         }
     }
 
-},{
-    instance: function () {
-        if (!singleton) {
-            singleton = new ImportService();
-        }
-        return singleton;
-    }
 });
 
 function createViewFn(options) {
@@ -43,4 +36,4 @@ function createViewFn(options) {
     });
 }
 
-module.exports = ImportService;
+module.exports = new ImportService();

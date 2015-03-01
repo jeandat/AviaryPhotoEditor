@@ -1,4 +1,4 @@
-var nativeOnDragOver, nativeOnDrop, singleton, importService;
+var nativeOnDragOver, nativeOnDrop;
 
 // Service that defines what happens when dragging a file over the window.
 var DragNDropService = Base.extend({
@@ -7,7 +7,6 @@ var DragNDropService = Base.extend({
 
     // Constructor
     initialize: function () {
-        importService = ImportService.instance();
         _.bindAll(this, 'onDrop', 'onDragOver');
     },
 
@@ -53,13 +52,6 @@ var DragNDropService = Base.extend({
     onDragOver: function (event) {
         event.preventDefault();
     }
-},{
-    instance: function () {
-        if (!singleton) {
-            singleton = new DragNDropService();
-        }
-        return singleton;
-    }
 });
 
-module.exports = DragNDropService;
+module.exports = new DragNDropService();

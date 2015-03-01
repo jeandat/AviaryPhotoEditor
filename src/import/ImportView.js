@@ -1,6 +1,4 @@
 var template = JST['import/import'];
-var photoCollection = PhotoCollection.instance();
-var fileService = FileService.instance();
 
 var ImportView = WavePopin.extend({
 
