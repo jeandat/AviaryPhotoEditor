@@ -3,8 +3,11 @@ var errPrefix = 'Houston, we\'ve had a problem here. ';
 
 var ImportView = WavePopin.extend({
 
-    id:'import-view',
-    className:WavePopin.prototype.className + ' import-view',
+    id: 'import-view',
+
+    className: function () {
+        return _.result(WavePopin.prototype, 'className') + ' import-view';
+    },
 
     initialize: function (options) {
 
@@ -14,11 +17,11 @@ var ImportView = WavePopin.extend({
         // This view will be used as content: it contains a list of funds
         options.contentTemplate = template(options);
 
-        WavePopin.prototype.initialize.apply(this, arguments);
+        WavePopin.prototype.initialize.call(this, options);
 
         var now = new Date();
 
-        this.photoModel = new PhotoModel({
+        this.model = new PhotoModel({
             id: Utils.guid(),
             importedUri: this.options.url || this.options.file,
             creation: now,
@@ -26,17 +29,15 @@ var ImportView = WavePopin.extend({
         });
 
         // This popin removes itself from the DOM when hidden
-        this.once('hide', function () {
-            this.remove();
-        });
+        this.once('hide', this.remove);
     },
 
     importUrl: function () {
-        return this._monitorImport(fileService.importUrl(this.options.url, this.photoModel.id));
+        return this._monitorImport(fileService.importUrl(this.options.url, this.model.id));
     },
 
     importFile: function () {
-        return this._monitorImport(fileService.importFile(this.options.file, this.photoModel.id));
+        return this._monitorImport(fileService.importFile(this.options.file, this.model.id));
     },
 
     // Monitor the progress of the importation and take action when done.
@@ -83,19 +84,18 @@ var ImportView = WavePopin.extend({
         }
         $message.removeClass('hidden');
         this.setClosable(true);
-        // TODO Add a cross in the right corner with an svg animation (path containing 5 points)
     },
 
     registerPhoto: function (pathOnDisk) {
-        this.photoModel.set('uri', pathOnDisk);
-        photoCollection.push(this.photoModel);
+        this.model.set('uri', pathOnDisk);
+        photoCollection.push(this.model);
         var self = this;
         var def = Q.defer();
         setTimeout(function () {
             self.hide().then(function () {
                 def.resolve();
-                self.trigger('import', self.photoModel);
-                Backbone.trigger('import', self, self.photoModel);
+                self.trigger('import', self.model);
+                Backbone.trigger('import', self, self.model);
             });
         },1000);
         return def.promise;

@@ -6,7 +6,7 @@ var ImportService = Base.extend({
 
     initialize: function () {
         Base.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, 'didChooseAFile');
+        _.bindAll(this, 'didChooseAFile', 'processFile', 'processUrl');
     },
 
     processUrl: function (url) {
@@ -22,7 +22,6 @@ var ImportService = Base.extend({
     _process: function (options) {
         if(currentView){
             currentView.hide().then(function () {
-                currentView.remove();
                 currentView = null;
                 createViewFn(options);
             });
@@ -43,7 +42,7 @@ var ImportService = Base.extend({
         var path = $chooser.val();
         if(path){
             // Forced to wait the native dialog is hidden. Too bad.
-            _.delay(this.processFile.bind(this), 500, path);
+            _.delay(this.processFile, 500, path);
             // Reset the selected value to empty ('') to avoid losing events
             // if the value doesn't change between two dialogs.
             $chooser.val('');
@@ -54,8 +53,7 @@ var ImportService = Base.extend({
 
 function createViewFn(options) {
     currentView = new ImportView(options);
-    $body.append(currentView.render().el);
-    currentView.show().then(function () {
+    currentView.render().show().then(function () {
         currentView.import();
     });
 }
