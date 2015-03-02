@@ -1,7 +1,6 @@
 // That's very strange but `nw.gui` doesn't live in node require scope.
 // Its reference is hardcoded in the require reference in window.
 // Just hit `window.require` in devtools to understand.
-var gui = require('nw.gui');
 var Menu = gui.Menu;
 var MenuItem = gui.MenuItem;
 

@@ -3,19 +3,6 @@ module.exports = function(){
     console.info('Hello, I\'m a node-webkit and Aviary SDK demo app');
 
 
-    // Define some globals used everywhere
-    window.Q = require('Q');
-
-
-
-    // Load the Nunito font.
-    // For simplicity sake and to test a new workaround that prevent the FOIT effect, I choosed to use a web technique
-    // and not integrate the fonts directly in the app.
-    new FontFaceObserver( 'Nunito, Poiret One', {}).check().then( function(){
-        document.documentElement.className += ' fonts-loaded';
-    });
-
-
     // Create a native Mac OS X menu
     nativeMenu.create();
 
@@ -37,13 +24,17 @@ module.exports = function(){
     // TODO intercept xhr
 
 
-    // Load the previous photo collection historic
-    // Show the app after everything is ready
-    // The last .done() instruction is a failsafe in case there was no fail block in the chain. If a rejected promise is not caught,
-    // or a then block return an error, it will throw an error in the next event loop assuring at least there is an error in the console.
+    // Load the previous photo collection historic.
+    // Show the app after everything is ready.
     photoCollection.fetch().then(function () {
-        var gui = require('nw.gui');
-        gui.Window.get().show();
+
+        // Load fonts.
+        // Not really needed here but I wanted to test this new workaround that prevent the FOIT effect.
+        return new FontFaceObserver( 'Nunito, Poiret One, icomoon', {}).check().then( function(){
+            document.documentElement.className += ' fonts-loaded';
+            gui.Window.get().show();
+        });
+
     }).done();
 
 };
