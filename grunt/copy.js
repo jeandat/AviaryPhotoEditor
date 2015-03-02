@@ -5,19 +5,22 @@ module.exports = {
             dest:'<%=build%>/',
             expand:true,
             cwd:'resources'
-        },{
+        },
+        {
             src:['package.json', 'README.md'],
             dest:'<%=build%>/'
-        },{
+        },
+        {
             src:'<%=jsFiles.vendors%>',
             dest:'<%=build%>/'
         },
-        // Copy icomoon font files
+        // Fonts
         {
-            src:'*',
-            dest:'<%=build%>/font/icomoon/',
+            src:'**/*.{ttf,woff,eot,svg}',
+            dest:'<%=build%>/font/',
             expand:true,
-            cwd:'resources/font/icomoon/fonts/'
+            flatten:true,
+            cwd:'resources/font/'
         }]
     }
 };
