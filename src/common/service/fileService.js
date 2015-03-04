@@ -32,7 +32,6 @@ var FileService = Base.extend({
 
         console.info('Initiating download of %s', url);
 
-        // TODO create historic folder if non existing
         var savePath = HISTORIC + id;
 
         var def = Q.defer();
@@ -69,7 +68,6 @@ var FileService = Base.extend({
 
         console.info('Initiating copy of %s', fileUri);
 
-        // TODO create historic folder if non existing
         var savePath = HISTORIC + id;
 
         var def = Q.defer();

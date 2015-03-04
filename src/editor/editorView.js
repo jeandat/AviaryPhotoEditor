@@ -13,7 +13,7 @@ var EditorView = Backbone.View.extend({
     initialize: function () {
 
         _.bindAll(this, 'onLoad', 'onError', 'onSave', 'onClose', 'togglePanes', 'onSaveButtonClicked');
-        this.listenTo(Backbone, 'import', this.photoDidImported);
+        this.listenTo(Backbone, 'import', this.didImportPhoto);
         this.editorClosed = true;
 
         // Create the Aviary Editor
@@ -43,7 +43,8 @@ var EditorView = Backbone.View.extend({
         return this;
     },
 
-    photoDidImported: function (view, model) {
+    didImportPhoto: function (view, model) {
+        this.model = model;
         var self = this;
         return this.closePanes().then(function () {
             return self.setImage(model.get('uri'));
@@ -51,32 +52,43 @@ var EditorView = Backbone.View.extend({
     },
 
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
-    setImage: function (url) {
-        this.shutdownEditor();
+    setImage: function (uri) {
         var def = Q.defer();
-
-        this.$el.addClass('hide-editor').removeClass('hide-photo');
-
+        var $el = this.$el;
         var self = this;
-        this.$el.one('csstransitionend', function () {
-            self.$source.attr('src', url);
-            self.$photos.css('backgroundImage', 'url(\'' + url + '\')');
-
+        this.shutdownEditor();
+        $el.addClass('hide-editor').removeClass('hide-photo');
+        $el.one('csstransitionend', function () {
+            self.$source.attr('src', uri);
+            self.$photos.css('backgroundImage', 'url(\'' + uri + '\')');
+            // TODO show an import error message if the promise is not resolved
+            // TODO Replace finally by a then and a fail => show an error popin
             var launchPromise = self.launchEditor().finally(function () {
-
-                self.$el.one('csstransitionend', function () {
+                $el.one('csstransitionend', function () {
                     launchPromise.isFulfilled() ? def.resolve() : def.reject(new CustomError(1, 'Editor failed to ' +
                     'launch.'));
-                    // TODO show an import error message if the promise is not resolved
                 });
-
-                self.$el.removeClass('show-photo');
+                $el.removeClass('show-photo');
             });
         });
-
-        this.$el.addClass('show-photo');
-
+        $el.addClass('show-photo');
         return def.promise;
+    },
+
+    // Invoked to update the photo after a save.
+    updateImage: function (uri) {
+        this.$source.attr('src', uri);
+        this.$photos.css('backgroundImage', 'url(\'' + uri + '\')');
+        var self = this;
+        return this.closePanes().then(function () {
+            self.shutdownEditor();
+            // TODO update message in popin with 'Finalizing...'
+            return self.launchEditor();
+        }).then(function () {
+            return self.saveView.hide();
+        }).finally(function () {
+            self.saveView = null;
+        });
     },
 
     // Make available the aviary editor (from loaded to ready state).
@@ -86,21 +98,25 @@ var EditorView = Backbone.View.extend({
         var self = this;
 
         if(this.editorClosed){
-            this.editor.launch({
-                image:img,
-                url:img.src,
-                onReady: function () {
-                    self.editorClosed = false;
-                    console.debug('Aviary editor ready');
-                    def.resolve();
-                    self.trigger('ready', this);
-                    Backbone.trigger('editor:ready', this);
-                },
-                onError: function (err) {
-                    self.onError(err);
-                    def.reject(err);
-                }
-            });
+            // This delay is a failsafe because the aviary editor can't be launched just after being shutdowned and
+            // there is no mechanism to be notified when its safe.
+            setTimeout(function () {
+                self.editor.launch({
+                    image:img,
+                    url:img.src,
+                    onReady: function () {
+                        self.editorClosed = false;
+                        console.debug('Aviary editor ready');
+                        def.resolve();
+                        self.trigger('ready', this);
+                        Backbone.trigger('editor:ready', this);
+                    },
+                    onError: function (err) {
+                        self.onError(err);
+                        def.reject(err);
+                    }
+                });
+            },500);
         }
         else{
             def.resolve();
@@ -112,6 +128,7 @@ var EditorView = Backbone.View.extend({
     shutdownEditor: function () {
         if(!this.editorClosed){
             this.editor.close();
+            console.info('Aviary editor closed');
             this.editorClosed = true;
         }
     },
@@ -172,18 +189,27 @@ var EditorView = Backbone.View.extend({
     // Callback when the save button of the aviary editor is clicked but before the save happens.
     // It is possible to abort the save by returning false.
     onSaveButtonClicked: function () {
-        // TODO show a custom wait indicator
-        // Imply to add `showWaitIndicator:false` in editor options
+        var view = this.saveView = new SaveView({model: this.model});
+        view.render();
+        // Strangely without the delay, there is no animation.
+        // If presume the animation is started too soon before the browser had time to process
+        // completely the node inserted in DOM.
+        _.delay(view.show, 200);
     },
 
     // Post callback after save.
     // Update the image above the editor then hide it.
     onSave: function (imageId, newUrl) {
         var self = this;
-        fileService.importUrl(newUrl).then(function (path) {
-            self.setImage(encodeURI(path));
-            self.toggle();
-        }).done();
+        return fileService.importUrl(newUrl).progress(function (state) {
+            self.saveView.progress(state.percentage);
+        })
+        .then(function (path) {
+            console.debug('update image');
+            self.model.set('uri', path);
+            return self.updateImage(path);
+        })
+        .done();
     },
 
     // Maintain photo in window

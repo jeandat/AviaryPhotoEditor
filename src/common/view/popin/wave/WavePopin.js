@@ -49,6 +49,9 @@ var WavePopin = Backbone.View.extend({
 
         $body.append(this.$el);
 
+        // Force a redraw to prepare the animation.
+        this.el.offsetHeight;
+
         return this;
     },
 
@@ -78,9 +81,6 @@ var WavePopin = Backbone.View.extend({
             this.triggerEvent('show');
             return def.promise;
         }
-
-        // Force a redraw before animating.
-        this.el.offsetHeight;
 
         // This will show the view with a transition.
         $el.addClass('shown');
