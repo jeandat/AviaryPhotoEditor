@@ -34,6 +34,10 @@ var SaveView = WavePopin.extend({
 
     progress: function (percentage) {
         this.$('progress').attr('value', percentage);
+    },
+
+    updateMessage: function (message) {
+        this.$('.label').text(message);
     }
 
 });

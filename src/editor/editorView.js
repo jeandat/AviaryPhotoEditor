@@ -82,7 +82,7 @@ var EditorView = Backbone.View.extend({
         var self = this;
         return this.closePanes().then(function () {
             self.shutdownEditor();
-            // TODO update message in popin with 'Finalizing...'
+            self.saveView.updateMessage('Finalizing...');
             return self.launchEditor();
         }).then(function () {
             return self.saveView.hide();
