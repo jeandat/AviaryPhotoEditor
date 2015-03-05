@@ -68,3 +68,27 @@
                     border-radius 10px
                     background-color #fff
                     transition width 400ms
+
+                &:not([value]) ~ .infinite
+                    opacity 1
+                    -webkit-animation infinite-progress 2s alternate infinite
+
+            .infinite
+                width 10px
+                height 10px
+                border-radius 10px
+                background-color white
+                //background-color #ff2d55
+                position absolute
+                top 0
+                left 5px
+                // right 0
+                bottom 0
+                margin auto
+                opacity 0
+
+    @keyframes infinite-progress
+        from
+            left .7%
+        to
+            left 98.3%
