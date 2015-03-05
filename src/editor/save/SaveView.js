@@ -23,6 +23,11 @@ var SaveView = WavePopin.extend({
         this.once('hide', this.remove);
     },
 
+    render: function () {
+        WavePopin.prototype.render.apply(this, arguments);
+        this.$progress = this.$('progress');
+    },
+
     abort: function (err) {
         console.error('Save failed: %o', err);
         this.$('.progress').addClass('failed');
@@ -33,7 +38,7 @@ var SaveView = WavePopin.extend({
     },
 
     progress: function (percentage) {
-        this.$('progress').attr('value', percentage);
+        this.$progress.attr('value', percentage);
     },
 
     updateMessage: function (message) {
