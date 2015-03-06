@@ -43,9 +43,11 @@ var ImportView = WavePopin.extend({
     // Monitor the progress of the importation and take action when done.
     _monitorImport: function (def) {
         var self = this;
-        return def.progress(function (state) {
-            self.$('progress').attr('value', state.percentage);
-        }).then(this.registerPhoto);
+        var progressValue = self.$('.progress-value')[0];
+        var updateProgressBarFn = _.throttle(function (state) {
+            progressValue.style.transform = 'translateX(-' + (100 - state.percentage) + '%)';
+        },100);
+        return def.progress(updateProgressBarFn).then(this.registerPhoto);
     },
 
     import: function () {
