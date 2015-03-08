@@ -44,10 +44,12 @@ var ImportView = WavePopin.extend({
     _monitorImport: function (def) {
         var self = this;
         var progressValue = self.$('.progress-value')[0];
-        var updateProgressBarFn = _.throttle(function (state) {
-            progressValue.style.transform = 'translateX(-' + (100 - state.percentage) + '%)';
-        },100);
-        return def.progress(updateProgressBarFn).then(this.registerPhoto);
+        var raf = function (state) {
+            requestAnimationFrame(function () {
+                progressValue.style.transform = 'translateX(-' + (100 - state.percentage) + '%)';
+            });
+        };
+        return def.progress(raf).then(this.registerPhoto);
     },
 
     import: function () {
