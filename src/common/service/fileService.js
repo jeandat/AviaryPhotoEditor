@@ -2,6 +2,7 @@ var fs = require('fs');
 var request = require('request');
 var progress = require('progress-stream');
 var mkdirp = require('mkdirp');
+var promisePipe = require('promisepipe');
 
 
 
@@ -65,7 +66,6 @@ var FileService = Base.extend({
     // Copy a `file` into Application Support with a generated name.
     // `id` is used as a name on disk.
     importFile: function (fileUri, id) {
-
         console.info('Initiating copy of %s', fileUri);
 
         var savePath = HISTORIC + id;
@@ -149,6 +149,17 @@ var FileService = Base.extend({
     removeFile: function (path){
         fs.unlink(path, function (err) {
             err && console.error('Can\'t remove file at %s: ', path, err);
+        });
+    },
+
+    copy: function (src, dest) {
+        return promisePipe(
+            fs.createReadStream(src),
+            fs.createWriteStream(dest)
+        ).then(function(){
+            console.debug('File at %s saved on disk at %s', src, dest);
+        }).catch(function(err) {
+            console.error('Failed to copy file from %s to %s: %o', src, dest, err.originalError);
         });
     }
 

@@ -51,6 +51,10 @@ var EditorView = Backbone.View.extend({
         }).done();
     },
 
+    getModel: function(){
+        return this.model;
+    },
+
     // Change all img urls : the hidden photo used by the aviary editor but also each pane above.
     setImage: function (uri) {
         var def = Q.defer();

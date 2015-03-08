@@ -7,6 +7,7 @@ var ImportService = Base.extend({
     initialize: function () {
         Base.prototype.initialize.apply(this, arguments);
         _.bindAll(this, 'didChooseAFile', 'processFile', 'processUrl');
+        $chooser.change(this.didChooseAFile);
     },
 
     processUrl: function (url) {
@@ -33,7 +34,6 @@ var ImportService = Base.extend({
 
     // Open a native dialog that allows selecting a file or a photo from iPhoto.
     showOpenDialog: function () {
-        $chooser.change(this.didChooseAFile);
         $chooser.trigger('click');
     },
 

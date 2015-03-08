@@ -71,7 +71,7 @@ var NativeMenu = Base.extend({
         fileSubMenu.append(new MenuItem({
             label: 'Export...',
             click: function () {
-                console.debug('Not implemented yet !');
+                exportService.showExportDialog();
             }
         }));
 
