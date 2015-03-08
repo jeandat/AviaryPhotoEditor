@@ -205,7 +205,7 @@ var EditorView = Backbone.View.extend({
     // Update the image above the editor then hide it.
     onSave: function (imageId, newUrl) {
         var self = this;
-        return fileService.importUrl(newUrl).progress(function (state) {
+        return fileService.importUrl(newUrl, this.model.get('id')).progress(function (state) {
             self.saveView.progress(state.percentage);
         })
         .then(function (path) {
