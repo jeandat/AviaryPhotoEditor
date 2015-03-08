@@ -29,81 +29,51 @@ var FileService = Base.extend({
 
     // Download a photo on disk into Application Support from a `url`.
     // `id` is used as a name on disk.
-    importUrl: function (url, id) {
-
-        console.info('Initiating download of %s', url);
-
-        var savePath = HISTORIC + id;
-
+    importUrl: function (src, id) {
         var def = Q.defer();
-
+        var dest = HISTORIC + id;
         var progressStream = progress({time: 100}).on('progress', function (state) {
             notifyProgress(def, state);
         });
-
-        var readableStream = request(url);
-        var writableStream = fs.createWriteStream(savePath);
-
-        readableStream
-            .on('error', function (err) {
-                streamDidNotOpen(def, savePath, url, err);
-            })
-            .pipe(progressStream)
-            .pipe(writableStream)
-            .on('error', function (err) {
-                streamDidNotOpen(def, savePath, savePath, err);
-            })
-            .on('close', function (err) {
-                if(err)
-                    photoDidNotSave(def, savePath, err);
-                else
-                    photoDidSave(def, url, savePath);
-            });
-
+        var readableStream = request(src);
+        var writableStream = fs.createWriteStream(dest);
+        promisePipe(readableStream, progressStream, writableStream)
+        .then(function () {
+            console.info('Imported photo from %s to %s', src, dest);
+            def.resolve(dest);
+        }).catch(function (err) {
+            console.error('Failed to import photo from %s: %o', src, err);
+            self.removeFile(dest);
+            def.reject(err);
+        });
         return def.promise;
     },
 
     // Copy a `file` into Application Support with a generated name.
     // `id` is used as a name on disk.
-    importFile: function (fileUri, id) {
-        console.info('Initiating copy of %s', fileUri);
-
-        var savePath = HISTORIC + id;
-
+    importFile: function (src, id) {
         var def = Q.defer();
-
-        fs.stat(fileUri, function (err, stats) {
-
-            if(err){
-                streamDidNotOpen(def, null, fileUri, err);
-                return;
-            }
-
+        var dest = HISTORIC + id;
+        var self = this;
+        var stat = Q.nbind(fs.stat, fs);
+        stat(src).catch(function(err){
+            console.error('File at %s is not accessible: %o', src, err);
+            def.reject(err);
+        }).then(function(stats){
             var progressStream = progress({length: stats.size, time: 30}).on('progress', function (state) {
                 notifyProgress(def, state);
             });
-
-            var readableStream = fs.createReadStream(fileUri);
-            var writableStream = fs.createWriteStream(savePath);
-
-            readableStream
-                .on('error', function (err) {
-                    streamDidNotOpen(def, savePath, fileUri, err);
-                })
-                .pipe(progressStream)
-                .pipe(writableStream)
-                .on('error', function (err) {
-                    streamDidNotOpen(def, savePath, savePath, err);
-                })
-                .on('close', function (err) {
-                    if(err)
-                        photoDidNotSave(def, savePath, err);
-                    else
-                        photoDidSave(def, fileUri, savePath);
-                });
-
+            var readableStream = fs.createReadStream(src);
+            var writableStream = fs.createWriteStream(dest);
+            return promisePipe(readableStream, progressStream, writableStream);
+        }).then(function () {
+            console.info('Imported photo from %s to %s', src, dest);
+            def.resolve(dest);
+        }).catch(function (err) {
+            console.error('Failed to import photo from %s: %o', src, err);
+            self.removeFile(dest);
+            def.reject(err);
         });
-
         return def.promise;
     },
 
@@ -184,32 +154,6 @@ function notifyProgress(def, state){
     console.debug('Received %s of %s: ', state.transferred, state.length);
     console.debug('Percent: ', state.percentage);
     def.notify(state);
-}
-
-function photoDidNotSave(def, savePath, err){
-    console.error('Failed to save photo on disk at %s: %o', savePath, err);
-    savePath && removePhotoOnErr(savePath);
-    def.reject(err);
-}
-
-function photoDidSave(def, openUri, savePath){
-    console.info('Photo at %s saved on disk at %s', openUri, savePath);
-    def.resolve(savePath);
-}
-
-// Could be either the read or write stream.
-// savePath and openUri might be the same.
-// Whatever scenario, if savePath is provided, it means the write stream was created, so we need to remove it.
-function streamDidNotOpen(def, savePath, openUri, err){
-    console.error('Failed to open stream from %s: %o', openUri, err);
-    savePath && removePhotoOnErr(savePath);
-    def.reject(err);
-}
-
-function removePhotoOnErr(savePath){
-    fs.unlink(savePath, function (err) {
-        err && console.error('Can\'t remove photo at %s: ', savePath, err);
-    });
 }
 
 module.exports = new FileService();
