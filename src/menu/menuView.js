@@ -9,10 +9,7 @@ var MenuView = Backbone.View.extend({
 
     events:{
         'click #edit-button':'editPhoto',
-        'click #tutorial-button':'showTutorial',
-        'click #import-button':function(){
-            importService.processFile('/Users/J2AN/Downloads/Aviary Photo Editor/Photo de test/Zion_Overlook_-_Flickr_-_Joe_Parks.jpg');
-        }
+        'click #tutorial-button':'showTutorial'
     },
 
     initialize: function () {

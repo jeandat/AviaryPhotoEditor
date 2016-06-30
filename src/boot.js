@@ -15,7 +15,7 @@ module.exports = function(){
     $body.append(editorView.render().el);
 
 
-    // Start the drang and drop service
+    // Start the drag and drop service
     dragNDropService.listen();
 
 
